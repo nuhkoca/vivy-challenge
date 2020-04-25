@@ -1,0 +1,28 @@
+<resources>
+    <string name="app_name">Vivy</string>
+
+    <string name="label_doctor_detail">Detail</string>
+    <string name="menu_search_item_title">Search</string>
+    <string name="menu_search_item_hint">Search Vivy</string>
+
+    <!-- Context Menu -->
+    <string name="context_menu_header_title">Choose an option</string>
+    <string name="context_menu_option_map">Show on map</string>
+    <string name="context_menu_option_call">Call</string>
+    <string name="context_menu_option_email">Send email</string>
+    <string name="context_menu_option_website">Visit website</string>
+
+    <!-- Intent -->
+    <string name="intent_chooser_title">Open with…</string>
+    <string name="intent_error_email_text">Email not found</string>
+    <string name="intent_error_map_text">Location not found</string>
+    <string name="intent_error_dial_text">Phone number not found</string>
+    <string name="intent_error_browser_text">Website not found</string>
+
+    <!-- Doctors Adapter -->
+    <string name="doctors_adapter_header_text">Vivy Doctors"</string>
+
+    <!-- Error View -->
+    <string name="error_message_text">Sorry, we\'re failed!</string>
+    <string name="load_state_error_button_text">Retry</string>
+</resources>

@@ -1,0 +1,54 @@
+<resources>
+
+    <!-- Base application theme. -->
+    <style name="AppTheme" parent="Theme.MaterialComponents.DayNight.NoActionBar">
+        <!-- Customize your theme here. -->
+        <item name="colorPrimary">@color/colorPrimary</item>
+        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
+        <item name="colorAccent">@color/colorAccent</item>
+        <item name="windowActionBar">false</item>
+        <item name="windowNoTitle">true</item>
+        <item name="searchViewStyle">@style/Vivy.SearchView</item>
+        <item name="snackbarTextViewStyle">@style/Vivy.Snackbar.TextAppearance</item>
+    </style>
+
+    <style name="Vivy" />
+
+    <style name="Vivy.Doctor" />
+
+    <style name="Vivy.Toolbar" parent="ThemeOverlay.MaterialComponents.Light">
+        <item name="fontFamily">@font/montserrat</item>
+        <item name="colorControlNormal">@android:color/white</item>
+        <item name="android:textColorPrimary">@android:color/white</item>
+        <item name="colorControlHighlight">@android:color/white</item>
+        <item name="android:textColorHint">@android:color/white</item>
+    </style>
+
+    <style name="Vivy.Toolbar.TextAppearance" parent="TextAppearance.Widget.AppCompat.Toolbar.Title">
+        <item name="fontFamily">@font/montserrat</item>
+    </style>
+
+    <style name="Vivy.Snackbar.TextAppearance" parent="@style/Widget.MaterialComponents.Snackbar.TextView">
+        <item name="fontFamily">@font/montserrat</item>
+    </style>
+
+    <style name="Vivy.SearchView" parent="Widget.AppCompat.Light.SearchView">
+        <item name="searchHintIcon">@null</item>
+        <item name="queryHint">@string/menu_search_item_hint</item>
+    </style>
+
+    <style name="Vivy.RecyclerView">
+        <item name="android:clipChildren">false</item>
+        <item name="android:clipToPadding">false</item>
+        <item name="android:splitMotionEvents">false</item>
+        <item name="android:layoutAnimation">@anim/layout_animation_fall_down</item>
+    </style>
+
+    <style name="Vivy.Doctor.TextView">
+        <item name="fontFamily">@font/montserrat</item>
+        <item name="android:maxLines">1</item>
+        <item name="android:drawablePadding">@dimen/spacing_small</item>
+        <item name="android:ellipsize">end</item>
+    </style>
+
+</resources>

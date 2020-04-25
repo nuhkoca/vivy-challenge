@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+        <variable
+            name="doctor"
+            type="io.github.nuhkoca.vivy.data.model.view.DoctorViewItem" />
+    </data>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="?android:attr/selectableItemBackground"
+        android:clickable="true"
+        android:focusable="true"
+        android:paddingStart="@dimen/spacing_small"
+        android:paddingTop="@dimen/spacing_small"
+        android:paddingEnd="@dimen/spacing_small"
+        android:paddingBottom="@dimen/spacing_small">
+
+        <androidx.appcompat.widget.AppCompatImageView
+            android:id="@+id/ivDoctorPhoto"
+            android:layout_width="@dimen/doctor_thumbnail_width"
+            android:layout_height="@dimen/doctor_thumbnail_height"
+            android:adjustViewBounds="true"
+            android:src="@{doctor.photoId}"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:srcCompat="@tools:sample/avatars" />
+
+        <TextView
+            android:id="@+id/tvDoctorName"
+            style="@style/Vivy.Doctor.TextView"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/spacing_small"
+            android:drawableStart="@drawable/ic_person"
+            android:text="@{doctor.name}"
+            app:layout_constraintBottom_toTopOf="@+id/tvDoctorAddress"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/ivDoctorPhoto"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/tvDoctorAddress"
+            style="@style/Vivy.Doctor.TextView"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:drawableStart="@drawable/ic_address"
+            android:text="@{doctor.address}"
+            app:layout_constraintBottom_toTopOf="@+id/tvDoctorRating"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toStartOf="@id/tvDoctorName"
+            app:layout_constraintTop_toBottomOf="@+id/tvDoctorName" />
+
+        <TextView
+            android:id="@+id/tvDoctorRating"
+            style="@style/Vivy.Doctor.TextView"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:drawableStart="@drawable/ic_rating"
+            android:text="@{String.valueOf(doctor.rating)}"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toStartOf="@id/tvDoctorAddress"
+            app:layout_constraintTop_toBottomOf="@+id/tvDoctorAddress" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>

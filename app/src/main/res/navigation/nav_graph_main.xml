@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/nav_graph_main"
+    app:startDestination="@id/doctorsFragment">
+
+    <fragment
+        android:id="@+id/doctorsFragment"
+        android:name="io.github.nuhkoca.vivy.ui.doctors.DoctorsFragment"
+        android:label="@string/app_name"
+        tools:layout="@layout/doctors_fragment">
+        <action
+            android:id="@+id/action_doctorsFragment_to_doctorDetailFragment"
+            app:destination="@id/doctorDetailFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/doctorDetailFragment"
+        android:name="io.github.nuhkoca.vivy.ui.detail.DoctorDetailFragment"
+        android:label="@string/label_doctor_detail"
+        tools:layout="@layout/fragment_doctor_detail" />
+</navigation>

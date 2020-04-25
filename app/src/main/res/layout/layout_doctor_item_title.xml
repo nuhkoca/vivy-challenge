@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout>
+
+    <TextView xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:fontFamily="@font/montserrat_bold"
+        android:paddingStart="@dimen/spacing_small"
+        android:paddingTop="@dimen/spacing_large"
+        android:paddingEnd="@dimen/spacing_small"
+        android:paddingBottom="@dimen/spacing_large"
+        android:text="@string/doctors_adapter_header_text"
+        android:textAppearance="@style/TextAppearance.MaterialComponents.Headline6" />
+</layout>
