@@ -19,9 +19,10 @@ import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 import io.github.nuhkoca.vivy.data.model.Location
+import java.util.*
 
 /**
- * A data class that represents each doctor for UI side
+ * A data class that represents each doctor for UI and database side
  *
  * @property id The doctor id
  * @property name The name of doctor
@@ -32,6 +33,8 @@ import io.github.nuhkoca.vivy.data.model.Location
  * @property phoneNumber The phone number of doctor
  * @property email The email address of doctor
  * @property website The website of doctor
+ * @property recentVisiting The recent visiting date of doctor
+ * @property isRecent The flag is doctor has been recently visited
  */
 @Entity(tableName = "doctors")
 data class DoctorViewItem(
@@ -46,5 +49,11 @@ data class DoctorViewItem(
     @ColumnInfo(name = "phone")
     val phoneNumber: String,
     val email: String,
-    val website: String
+    val website: String,
+    @Transient
+    @ColumnInfo(name = "recent_visiting")
+    val recentVisiting: Date = Date(),
+    @Transient
+    @ColumnInfo(name = "is_recent")
+    val isRecent: Boolean = false
 )

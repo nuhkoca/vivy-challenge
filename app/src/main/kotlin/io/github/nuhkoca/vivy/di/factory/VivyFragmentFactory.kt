@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.github.nuhkoca.libbra.di.factory
+package io.github.nuhkoca.vivy.di.factory
 
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentFactory

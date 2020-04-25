@@ -15,7 +15,8 @@
  */
 package io.github.nuhkoca.vivy.data.service
 
-import io.github.nuhkoca.vivy.data.model.raw.DoctorsRaw
+import io.github.nuhkoca.vivy.data.model.raw.Doctors
+import retrofit2.Call
 import retrofit2.http.GET
 import retrofit2.http.Url
 
@@ -29,8 +30,8 @@ interface DoctorsService {
      *
      * @param lastKey The key to fetch next pages
      *
-     * @return [DoctorsRaw]
+     * @return [Doctors]
      */
     @GET
-    suspend fun getDoctorList(@Url lastKey: String?): DoctorsRaw
+    fun getDoctorList(@Url lastKey: String?): Call<Doctors>
 }

@@ -63,7 +63,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:drawableStart="@drawable/ic_rating"
-            android:text="@{String.valueOf(doctor.rating)}"
+            android:rating="@{doctor.rating}"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.5"

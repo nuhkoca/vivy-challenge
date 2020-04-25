@@ -17,28 +17,28 @@ package io.github.nuhkoca.vivy.ui.doctors
 
 import android.os.Bundle
 import android.view.MenuItem
-import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.observe
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.navGraphViewModels
 import androidx.recyclerview.widget.MergeAdapter
-import androidx.recyclerview.widget.RecyclerView
 import io.github.nuhkoca.vivy.R
 import io.github.nuhkoca.vivy.data.model.view.DoctorViewItem
 import io.github.nuhkoca.vivy.databinding.DoctorsFragmentBinding
+import io.github.nuhkoca.vivy.ui.Searchable
 import io.github.nuhkoca.vivy.ui.di.MainScope
 import io.github.nuhkoca.vivy.ui.doctors.adapter.DoctorsAdapter
 import io.github.nuhkoca.vivy.ui.doctors.adapter.DoctorsLoadStateAdapter
+import io.github.nuhkoca.vivy.ui.doctors.adapter.RecentDoctorsAdapter
 import io.github.nuhkoca.vivy.util.event.SingleLiveEvent
 import io.github.nuhkoca.vivy.util.ext.composeEmail
 import io.github.nuhkoca.vivy.util.ext.dialPhoneNumber
-import io.github.nuhkoca.vivy.util.ext.linearLayoutManager
+import io.github.nuhkoca.vivy.util.ext.i
 import io.github.nuhkoca.vivy.util.ext.openWebPage
 import io.github.nuhkoca.vivy.util.ext.showMap
 import io.github.nuhkoca.vivy.util.ext.viewBinding
-import io.github.nuhkoca.vivy.util.recyclerview.LoadState
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import javax.inject.Inject
 
 /*
@@ -52,26 +52,20 @@ import javax.inject.Inject
 class DoctorsFragment @Inject constructor(
     private val viewModelFactory: ViewModelProvider.Factory,
     private val doctorsAdapter: DoctorsAdapter,
+    private val recentDoctorsAdapter: RecentDoctorsAdapter,
     private val loadStateAdapter: DoctorsLoadStateAdapter,
     private val itemClickLiveData: SingleLiveEvent<DoctorViewItem>,
     private val retryLiveData: SingleLiveEvent<Unit>
-) : Fragment(R.layout.doctors_fragment) {
+) : Fragment(R.layout.doctors_fragment), Searchable {
 
-    private val mergeAdapter = MergeAdapter(doctorsAdapter, loadStateAdapter)
+    private val mergeAdapter = MergeAdapter(recentDoctorsAdapter, doctorsAdapter, loadStateAdapter)
     private val binding: DoctorsFragmentBinding by viewBinding(DoctorsFragmentBinding::bind)
-    private val mergedBinding by viewBinding { binding.errorContainer }
     private val viewModel: DoctorsViewModel by navGraphViewModels(R.id.nav_graph_main) { viewModelFactory }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-        setupSwipeRefreshLayout()
         setupRecyclerView()
         observeViewModel()
-    }
-
-    private fun setupSwipeRefreshLayout() = with(binding.srlDoctors) {
-        setColorSchemeResources(R.color.colorPrimary, R.color.colorAccent, R.color.colorPrimaryDark)
-        setOnRefreshListener { viewModel.retry() }
     }
 
     private fun setupRecyclerView() = with(binding.rvDoctors) {
@@ -84,25 +78,11 @@ class DoctorsFragment @Inject constructor(
     }
 
     private fun observeViewModel() = with(viewModel) {
-        doctorsLiveData.observe(viewLifecycleOwner) {
-            doctorsAdapter.submitList(it) {
-                // Workaround for an issue where RecyclerView incorrectly uses the loading / spinner
-                // item added to the end of the list as an anchor during initial load.
-                // credit: https://github.com/android/architecture-components-samples/blob/master/PagingWithNetworkSample/app/src/main/java/com/android/example/paging/pagingwithnetwork/reddit/ui/RedditActivity.kt
-                val pos =
-                    binding.rvDoctors.linearLayoutManager.findFirstCompletelyVisibleItemPosition()
-                if (pos != RecyclerView.NO_POSITION) {
-                    binding.rvDoctors.post { binding.rvDoctors.scrollToPosition(0) }
-                }
-            }
+        doctors.observe(viewLifecycleOwner) { doctorsAdapter.submitList(it) }
+        recentDoctors.observe(viewLifecycleOwner) {
+            recentDoctorsAdapter.submitList(it)
         }
         networkState.observe(viewLifecycleOwner, loadStateAdapter::loadState::set)
-        initialState.observe(viewLifecycleOwner) { state ->
-            binding.srlDoctors.isRefreshing = false
-            binding.pbDoctors.isVisible = state is LoadState.Loading
-            binding.rvDoctors.isVisible = state is LoadState.Done
-            mergedBinding.root.isVisible = state is LoadState.Error
-        }
         navigationLiveData.observe(viewLifecycleOwner, findNavController()::navigate)
     }
 
@@ -130,5 +110,10 @@ class DoctorsFragment @Inject constructor(
             }
             else -> super.onContextItemSelected(item)
         }
+    }
+
+    @ExperimentalCoroutinesApi
+    override fun onQueryChange(query: String?) {
+        viewModel.queryChannel.offer(query)
     }
 }

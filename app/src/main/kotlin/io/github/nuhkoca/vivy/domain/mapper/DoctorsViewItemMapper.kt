@@ -15,51 +15,52 @@
  */
 package io.github.nuhkoca.vivy.domain.mapper
 
-import io.github.nuhkoca.vivy.data.model.domain.Doctors
+import io.github.nuhkoca.vivy.data.model.Location
+import io.github.nuhkoca.vivy.data.model.inline.Latitude
+import io.github.nuhkoca.vivy.data.model.inline.Longitude
+import io.github.nuhkoca.vivy.data.model.raw.Doctors
 import io.github.nuhkoca.vivy.data.model.view.DoctorViewItem
 import io.github.nuhkoca.vivy.data.model.view.DoctorsViewItem
-import io.github.nuhkoca.vivy.util.coroutines.DispatcherProvider
 import io.github.nuhkoca.vivy.util.ext.i
 import io.github.nuhkoca.vivy.util.mapper.Mapper
-import kotlinx.coroutines.withContext
+import java.math.RoundingMode
+import java.text.DecimalFormat
+import java.text.DecimalFormatSymbols
+import java.util.*
 import javax.inject.Inject
 import javax.inject.Singleton
 
 /**
  * A [Mapper] implementation to map [Doctors] to [DoctorsViewItem] type.
- *
- * @param dispatcherProvider The [DispatcherProvider] to run calls under a specific context
  */
 @Singleton
-class DoctorsViewItemMapper @Inject constructor(
-    private val dispatcherProvider: DispatcherProvider
-) : Mapper<Doctors, DoctorsViewItem> {
+class DoctorsViewItemMapper @Inject constructor() : Mapper<Doctors, DoctorsViewItem> {
 
     /**
-     * A suspend function that maps [Doctors] to [DoctorsViewItem] type.
+     * Maps [Doctors] to [DoctorsViewItem] type.
      *
      * @param item The [Doctors]
      *
      * @return [DoctorsViewItem]
      */
-    override suspend fun map(item: Doctors) = withContext(dispatcherProvider.default) {
+    override fun map(item: Doctors?): DoctorsViewItem {
         val doctors = mutableListOf<DoctorViewItem>()
 
-        item.doctors.forEach { doctorRaw ->
-            with(doctorRaw) {
-                val doctor = DoctorViewItem(
+        item?.doctors?.forEach { doctor ->
+            with(doctor) {
+                val viewItem = DoctorViewItem(
                     id,
                     name,
                     photoId,
-                    rating,
+                    rating.round(),
                     address,
-                    location,
+                    Location(Latitude(latitude), Longitude(longitude)),
                     phoneNumber,
-                    email,
-                    website
+                    email.orEmpty(),
+                    website.orEmpty()
                 )
 
-                doctors.add(doctor)
+                doctors.add(viewItem)
             }
         }
 
@@ -67,6 +68,18 @@ class DoctorsViewItemMapper @Inject constructor(
             i { "Doctors successfully added" }
         }
 
-        DoctorsViewItem(doctors, item.lastKey)
+        return DoctorsViewItem(doctors, item?.lastKey)
+    }
+
+    /**
+     * Rounds given double value with single decimal
+     *
+     * @return [Double] with single decimal
+     */
+    private fun Double?.round(): Double {
+        val formatter = DecimalFormat("#.#", DecimalFormatSymbols(Locale.ENGLISH)).apply {
+            roundingMode = RoundingMode.HALF_UP
+        }
+        return formatter.format(this).toDouble()
     }
 }

@@ -13,16 +13,33 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.github.nuhkoca.vivy.data.failure
+package io.github.nuhkoca.vivy.db.converters
 
-import kotlinx.serialization.Serializable
+import androidx.room.TypeConverter
+import java.util.*
 
 /**
- * A data class which represents error response.
- *
- * @property message The error message
+ * Type converters for [Date] to allow Room to reference.
  */
-@Serializable
-internal data class ErrorResponse(
-    val message: String
-)
+class DateTimeConverter {
+
+    /**
+     * Converts [Date] type to corresponding [Long]
+     *
+     * @param value The [Date]
+     *
+     * @return time in millis
+     */
+    @TypeConverter
+    fun dateTimeToLong(value: Date): Long = value.time
+
+    /**
+     * Converts [Long] type to corresponding [Date]
+     *
+     * @param value The millis
+     *
+     * @return [Date]
+     */
+    @TypeConverter
+    fun longToDateTime(value: Long): Date = Date(value)
+}

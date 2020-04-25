@@ -21,6 +21,7 @@ import coil.ImageLoaderBuilder
 import dagger.Module
 import dagger.Provides
 import io.github.nuhkoca.vivy.binding.adapters.ImageBindingAdapter
+import io.github.nuhkoca.vivy.binding.adapters.TextBindingAdapter
 import javax.inject.Qualifier
 import javax.inject.Scope
 
@@ -42,6 +43,11 @@ internal object BindingModule {
     internal fun provideImageBindingAdapter(
         imageLoader: ImageLoader
     ) = ImageBindingAdapter(imageLoader)
+
+    @Provides
+    @InternalApi
+    @BindingScope
+    internal fun provideTextBindingAdapter() = TextBindingAdapter()
 }
 
 @Scope

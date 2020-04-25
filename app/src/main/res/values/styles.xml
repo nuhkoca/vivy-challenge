@@ -35,13 +35,14 @@
     <style name="Vivy.SearchView" parent="Widget.AppCompat.Light.SearchView">
         <item name="searchHintIcon">@null</item>
         <item name="queryHint">@string/menu_search_item_hint</item>
+        <item name="android:imeOptions">actionDone</item>
+        <item name="android:inputType">textNoSuggestions|text|textPersonName</item>
     </style>
 
     <style name="Vivy.RecyclerView">
         <item name="android:clipChildren">false</item>
         <item name="android:clipToPadding">false</item>
         <item name="android:splitMotionEvents">false</item>
-        <item name="android:layoutAnimation">@anim/layout_animation_fall_down</item>
     </style>
 
     <style name="Vivy.Doctor.TextView">

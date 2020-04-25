@@ -17,8 +17,14 @@ package io.github.nuhkoca.vivy.util.navigation
 
 import androidx.annotation.IdRes
 
+/**
+ * A helper interface that holds action id of destinations
+ */
 interface Navigateable {
 
+    /**
+     * Represents the action id for destination
+     */
     @get:IdRes
     val actionId: Int
 }

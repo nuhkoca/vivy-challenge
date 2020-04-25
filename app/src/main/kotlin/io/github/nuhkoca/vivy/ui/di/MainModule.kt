@@ -17,20 +17,19 @@ package io.github.nuhkoca.vivy.ui.di
 
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModel
-import androidx.paging.PageKeyedDataSource
 import dagger.Binds
 import dagger.Module
 import dagger.Provides
 import dagger.multibindings.IntoMap
-import io.github.nuhkoca.libbra.di.factory.FragmentKey
-import io.github.nuhkoca.libbra.di.factory.ViewModelKey
 import io.github.nuhkoca.vivy.data.model.view.DoctorViewItem
+import io.github.nuhkoca.vivy.di.factory.FragmentKey
+import io.github.nuhkoca.vivy.di.factory.ViewModelKey
 import io.github.nuhkoca.vivy.ui.detail.DoctorDetailFragment
 import io.github.nuhkoca.vivy.ui.doctors.DoctorsFragment
 import io.github.nuhkoca.vivy.ui.doctors.DoctorsViewModel
 import io.github.nuhkoca.vivy.ui.doctors.adapter.DoctorsAdapter
 import io.github.nuhkoca.vivy.ui.doctors.adapter.DoctorsLoadStateAdapter
-import io.github.nuhkoca.vivy.ui.doctors.pagination.DoctorsDataSource
+import io.github.nuhkoca.vivy.ui.doctors.adapter.RecentDoctorsAdapter
 import io.github.nuhkoca.vivy.util.event.SingleLiveEvent
 import javax.inject.Scope
 
@@ -55,11 +54,6 @@ internal abstract class MainModule {
     @ViewModelKey(DoctorsViewModel::class)
     internal abstract fun bindDoctorsViewModel(viewModel: DoctorsViewModel): ViewModel
 
-    @Binds
-    internal abstract fun bindDoctorsDataSource(
-        doctorsDataSource: DoctorsDataSource
-    ): PageKeyedDataSource<String, DoctorViewItem>
-
     @Module
     internal companion object {
 
@@ -68,6 +62,12 @@ internal abstract class MainModule {
         internal fun provideDoctorsAdapter(
             itemClickLiveData: SingleLiveEvent<DoctorViewItem>
         ) = DoctorsAdapter(itemClickLiveData)
+
+        @Provides
+        @MainScope
+        internal fun provideRecentDoctorsAdapter(
+            itemClickLiveData: SingleLiveEvent<DoctorViewItem>
+        ) = RecentDoctorsAdapter(itemClickLiveData)
 
         @Provides
         @MainScope

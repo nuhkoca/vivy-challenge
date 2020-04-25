@@ -15,33 +15,124 @@
  */
 package io.github.nuhkoca.vivy.domain.repository
 
-import io.github.nuhkoca.vivy.data.Result
-import io.github.nuhkoca.vivy.data.datasource.DataSource
-import io.github.nuhkoca.vivy.data.model.domain.Doctors
-import io.github.nuhkoca.vivy.di.Remote
-import kotlinx.coroutines.flow.Flow
+import androidx.annotation.MainThread
+import androidx.annotation.WorkerThread
+import androidx.lifecycle.LiveData
+import androidx.paging.PagedList
+import androidx.paging.toLiveData
+import io.github.nuhkoca.vivy.data.model.Listing
+import io.github.nuhkoca.vivy.data.model.raw.Doctors
+import io.github.nuhkoca.vivy.data.model.view.DoctorViewItem
+import io.github.nuhkoca.vivy.data.model.view.DoctorsViewItem
+import io.github.nuhkoca.vivy.data.service.DoctorsService
+import io.github.nuhkoca.vivy.db.VivyDB
+import io.github.nuhkoca.vivy.domain.boundary.DoctorsBoundaryCallback
+import io.github.nuhkoca.vivy.util.ext.w
+import io.github.nuhkoca.vivy.util.mapper.Mapper
+import java.util.*
+import java.util.concurrent.ExecutorService
 import javax.inject.Inject
 import javax.inject.Singleton
 
 /**
- * A [Repository] implementation to interact with [DataSource] in order to fetch list of
- * doctors.
+ * A [Repository] implementation to fetch list of doctors from a single source.
  *
- * @param remoteDataSource The data source
+ * @param vivyDB The database
+ * @param service The remote service
+ * @param mapper The mapper to convert between types
+ * @param ioExecutor The executor to execute database processes in the background thread
  */
 @Singleton
 class DoctorsRepository @Inject constructor(
-    @Remote private val remoteDataSource: DataSource
+    private val vivyDB: VivyDB,
+    private val service: DoctorsService,
+    private val mapper: @JvmSuppressWildcards Mapper<Doctors, DoctorsViewItem>,
+    private val ioExecutor: ExecutorService
 ) : Repository {
 
     /**
-     * Fetches list of doctors
+     * Inserts the response into the database while also assigning position indices to items.
      *
-     * @param lastKey The key to fetch next pages
-     *
-     * @return [Doctors] within [Flow] builder
+     * @param body The list of [DoctorViewItem]
      */
-    override fun getDoctorList(lastKey: String?): Flow<Result<Doctors>> {
-        return remoteDataSource.getDoctorList(lastKey)
+    private fun insertResultIntoDb(body: List<DoctorViewItem>?) {
+        body?.let { doctors ->
+            vivyDB.runInTransaction {
+                vivyDB.doctorsDao.insertAll(doctors)
+            }
+        }
+    }
+
+    /**
+     * Returns a Listing for all doctors
+     *
+     * @return result in [Listing] wrapper
+     */
+    override fun getDoctorList(): Listing<DoctorViewItem> {
+        // create a boundary callback which will observe when the user reaches to the edges of
+        // the list and update the database with extra data.
+        val boundaryCallback = DoctorsBoundaryCallback(
+            service = service,
+            mapper = mapper,
+            handleResponse = this::insertResultIntoDb,
+            ioExecutor = ioExecutor
+        )
+        // We use toLiveData Kotlin extension function here, you could also use LivePagedListBuilder
+        val livePagedList = vivyDB.doctorsDao.getDoctorList().toLiveData(
+            pageSize = PAGE_SIZE_DEFAULT,
+            boundaryCallback = boundaryCallback
+        )
+
+        return Listing(
+            pagedList = livePagedList,
+            networkState = boundaryCallback.networkState,
+            retry = { boundaryCallback.helper.retryAllFailed() }
+        )
+    }
+
+    /**
+     * Returns list of doctors with given name constraint
+     *
+     * @param name The doctor name
+     *
+     * @return result in [LiveData] wrapper
+     */
+    @MainThread
+    override fun getDoctorsByName(name: String): LiveData<PagedList<DoctorViewItem>> {
+        return vivyDB.doctorsDao.getDoctorsByName(name).toLiveData(PAGE_SIZE_DEFAULT)
+    }
+
+    /**
+     * Returns recent visited doctors by the most recent visiting time
+     *
+     * @return [DoctorViewItem] in LiveData wrapper
+     */
+    @MainThread
+    override fun getRecentDoctors(): LiveData<List<DoctorViewItem>> {
+        return vivyDB.doctorsDao.getRecentDoctorList()
+    }
+
+    /**
+     * Updates visiting time of selected doctor
+     *
+     * @param id The doctor id
+     */
+    @WorkerThread
+    override fun updateVisitingTimeById(id: String) {
+        ioExecutor.execute {
+            vivyDB.doctorsDao.updateVisitingTimeById(Date(System.currentTimeMillis()), id)
+            val count = vivyDB.doctorsDao.getRecentCount()
+
+            if (count > 3) {
+                w { "Count is higher than 3 so that oldest item is being deleted from recent list" }
+                val items = vivyDB.doctorsDao.getAllRecentDoctors()
+                val oldestId = items.last().id
+                vivyDB.doctorsDao.removeFromRecent(oldestId)
+            }
+        }
+    }
+
+    private companion object {
+        private const val PAGE_SIZE_DEFAULT = 20
     }
 }

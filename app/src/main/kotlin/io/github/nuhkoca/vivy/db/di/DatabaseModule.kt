@@ -20,7 +20,6 @@ import androidx.room.Room
 import dagger.Module
 import dagger.Provides
 import io.github.nuhkoca.vivy.db.VivyDB
-import javax.inject.Qualifier
 import javax.inject.Singleton
 
 @Module
@@ -28,17 +27,7 @@ internal class DatabaseModule {
 
     @Provides
     @Singleton
-    @InternalApi
     internal fun provideVivyDatabase(context: Context): VivyDB {
         return Room.databaseBuilder(context, VivyDB::class.java, "vivy.db").build()
     }
-
-    @Provides
-    @Singleton
-    internal fun provideDoctorsDao(@InternalApi vivyDB: VivyDB) = vivyDB.doctorsDao
 }
-
-@Qualifier
-@Retention(AnnotationRetention.BINARY)
-@MustBeDocumented
-private annotation class InternalApi

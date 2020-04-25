@@ -32,10 +32,10 @@ sealed class LoadState {
     /**
      * Loading hit an error.
      *
-     * @param error [Throwable] that caused the load operation to generate this error state.
+     * @param error The string message that caused the load operation to generate this error state.
      *
      */
-    data class Error(val error: Throwable) : LoadState() {
+    data class Error(val error: String) : LoadState() {
         override fun toString() = "Error: $error"
     }
 }

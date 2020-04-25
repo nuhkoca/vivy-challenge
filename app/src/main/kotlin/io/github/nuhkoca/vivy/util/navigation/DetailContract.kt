@@ -16,7 +16,12 @@
 package io.github.nuhkoca.vivy.util.navigation
 
 import io.github.nuhkoca.vivy.R
+import io.github.nuhkoca.vivy.ui.detail.DoctorDetailFragment
+import io.github.nuhkoca.vivy.ui.doctors.DoctorsFragment
 
+/**
+ * A [Navigateable] implementation for navigation from [DoctorsFragment] to [DoctorDetailFragment]
+ */
 object DetailContract : Navigateable {
 
     override val actionId: Int

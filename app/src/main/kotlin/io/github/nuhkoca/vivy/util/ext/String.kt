@@ -13,18 +13,24 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.github.nuhkoca.vivy.data.model.raw
+@file:JvmName("StringKt")
 
-import kotlinx.serialization.Serializable
+package io.github.nuhkoca.vivy.util.ext
+
+private const val ENDPOINT_PREFIX = "interviews/challenges/android/doctors"
+private const val RESPONSE_TYPE_SUFFIX = ".json"
 
 /**
- * A data class that includes list of doctors
+ * Converts given last key to corresponding url form.
  *
- * @property doctors The list of doctors
- * @property lastKey The key to fetch next pages
+ * @param lastKey The key
+ *
+ * @return The url
  */
-@Serializable
-data class DoctorsRaw(
-    val doctors: List<DoctorRaw>,
-    val lastKey: String?
-)
+fun manipulateUrl(lastKey: String?): String {
+    return if (lastKey.isNullOrEmpty()) {
+        "$ENDPOINT_PREFIX$RESPONSE_TYPE_SUFFIX"
+    } else {
+        "$ENDPOINT_PREFIX-$lastKey$RESPONSE_TYPE_SUFFIX"
+    }
+}

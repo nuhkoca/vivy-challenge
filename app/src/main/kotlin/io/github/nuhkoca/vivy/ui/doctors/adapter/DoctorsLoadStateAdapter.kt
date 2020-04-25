@@ -82,8 +82,9 @@ class DoctorsLoadStateAdapter @Inject constructor(
 
         override fun bindTo(item: LoadState) {
             if (item is LoadState.Error) {
-                binding.tvError.text = item.error.localizedMessage
+                binding.tvError.text = item.error
             }
+
             binding.pbError.isVisible = item is LoadState.Loading
             binding.btnError.isVisible = item is LoadState.Error
             binding.tvError.isVisible = item is LoadState.Error

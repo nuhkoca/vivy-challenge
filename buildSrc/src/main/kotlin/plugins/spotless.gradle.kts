@@ -76,7 +76,11 @@ configure<SpotlessExtension> {
                 mapOf(
                     "dir" to ".",
                     "include" to listOf("**/*.java"),
-                    "exclude" to listOf("**/build/**", "**/spotless/*.java")
+                    "exclude" to listOf(
+                        "**/build/**",
+                        "**/spotless/*.java",
+                        "**/PagingRequestHelper.java"
+                    )
                 )
             )
         )

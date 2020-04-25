@@ -21,14 +21,28 @@ import io.github.nuhkoca.vivy.data.model.inline.Latitude
 import io.github.nuhkoca.vivy.data.model.inline.Longitude
 
 /**
- * Type converters to allow Room to reference complex data types.
+ * Type converters for [Location] to allow Room to reference.
  */
-class Converters {
+class LocationConverter {
 
+    /**
+     * Converts [Location] type to corresponding [String]
+     *
+     * @param value The [Location]
+     *
+     * @return coordinates in [String]
+     */
     @TypeConverter
-    fun locationToString(location: Location): String =
-        "${location.latitude.value},${location.longitude.value}"
+    fun locationToString(value: Location): String =
+        "${value.latitude.value},${value.longitude.value}"
 
+    /**
+     * Converts [String] type to corresponding [Location]
+     *
+     * @param value The coordinates in [String]
+     *
+     * @return [Location]
+     */
     @TypeConverter
     fun stringToLocation(value: String): Location {
         val coordinates = value.split(",")

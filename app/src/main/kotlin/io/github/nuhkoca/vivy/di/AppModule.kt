@@ -20,11 +20,7 @@ import dagger.Binds
 import dagger.Module
 import dagger.Provides
 import io.github.nuhkoca.vivy.BuildConfig.BASE_URL
-import io.github.nuhkoca.vivy.data.datasource.DataSource
-import io.github.nuhkoca.vivy.data.datasource.DoctorsRemoteDataSource
-import io.github.nuhkoca.vivy.data.mapper.DoctorsDomainMapper
-import io.github.nuhkoca.vivy.data.model.domain.Doctors
-import io.github.nuhkoca.vivy.data.model.raw.DoctorsRaw
+import io.github.nuhkoca.vivy.data.model.raw.Doctors
 import io.github.nuhkoca.vivy.data.model.view.DoctorsViewItem
 import io.github.nuhkoca.vivy.data.service.DoctorsService
 import io.github.nuhkoca.vivy.data.verifier.VivyHostnameVerifier
@@ -32,12 +28,6 @@ import io.github.nuhkoca.vivy.db.di.DatabaseModule
 import io.github.nuhkoca.vivy.domain.mapper.DoctorsViewItemMapper
 import io.github.nuhkoca.vivy.domain.repository.DoctorsRepository
 import io.github.nuhkoca.vivy.domain.repository.Repository
-import io.github.nuhkoca.vivy.domain.usecase.DoctorParams
-import io.github.nuhkoca.vivy.domain.usecase.DoctorsUseCase
-import io.github.nuhkoca.vivy.domain.usecase.UseCase
-import io.github.nuhkoca.vivy.util.coroutines.DefaultDispatcherProvider
-import io.github.nuhkoca.vivy.util.coroutines.DispatcherProvider
-import io.github.nuhkoca.vivy.util.ext.errorInterceptor
 import io.github.nuhkoca.vivy.util.mapper.Mapper
 import kotlinx.serialization.UnstableDefault
 import kotlinx.serialization.json.Json
@@ -46,31 +36,13 @@ import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 import retrofit2.create
+import java.util.concurrent.Executors
 import java.util.concurrent.TimeUnit
 import javax.inject.Qualifier
 import javax.inject.Singleton
 
 @Module(includes = [DatabaseModule::class])
 abstract class AppModule {
-
-    @Binds
-    @Singleton
-    internal abstract fun bindDispatcherProvider(
-        defaultDispatcherProvider: DefaultDispatcherProvider
-    ): DispatcherProvider
-
-    @Binds
-    @Remote
-    @Singleton
-    internal abstract fun bindRemoteDataSource(
-        doctorsRemoteDataSource: DoctorsRemoteDataSource
-    ): DataSource
-
-    @Binds
-    @Singleton
-    internal abstract fun bindDoctorsDomainMapper(
-        doctorsDomainMapper: DoctorsDomainMapper
-    ): Mapper<DoctorsRaw, Doctors>
 
     @Binds
     @Singleton
@@ -83,12 +55,6 @@ abstract class AppModule {
     internal abstract fun bindDoctorsViewItemMapper(
         doctorsViewItemMapper: DoctorsViewItemMapper
     ): Mapper<Doctors, DoctorsViewItem>
-
-    @Binds
-    @Singleton
-    internal abstract fun bindDoctorsUseCase(
-        doctorsUseCase: DoctorsUseCase
-    ): UseCase.FlowUseCase<DoctorParams, DoctorsViewItem>
 
     @Module
     internal companion object {
@@ -124,7 +90,6 @@ abstract class AppModule {
                 readTimeout(TIMEOUT_IN_MS, TimeUnit.MILLISECONDS)
                 writeTimeout(TIMEOUT_IN_MS, TimeUnit.MILLISECONDS)
                 addInterceptor(loggingInterceptor)
-                addInterceptor(errorInterceptor())
             }.build()
         }
 
@@ -134,6 +99,10 @@ abstract class AppModule {
         internal fun provideHttpLoggingInterceptor(): HttpLoggingInterceptor {
             return HttpLoggingInterceptor().apply { level = HttpLoggingInterceptor.Level.BODY }
         }
+
+        @Provides
+        @Singleton
+        internal fun provideIOExecutor() = Executors.newSingleThreadExecutor()
     }
 }
 
@@ -141,7 +110,3 @@ abstract class AppModule {
 @Retention(AnnotationRetention.BINARY)
 @MustBeDocumented
 private annotation class InternalApi
-
-@Qualifier
-@MustBeDocumented
-annotation class Remote

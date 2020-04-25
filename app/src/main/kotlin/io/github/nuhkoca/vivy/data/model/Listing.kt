@@ -13,15 +13,20 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.github.nuhkoca.vivy.data.model.domain
+package io.github.nuhkoca.vivy.data.model
+
+import androidx.lifecycle.LiveData
+import androidx.paging.PagedList
+import io.github.nuhkoca.vivy.util.recyclerview.LoadState
 
 /**
- * A data class that includes list of doctors
- *
- * @property doctors The list of doctors
- * @property lastKey The key to fetch next pages
+ * Data class that is necessary for a UI to show a listing and interact w/ the rest of the system
  */
-data class Doctors(
-    val doctors: List<Doctor>,
-    val lastKey: String?
+data class Listing<T>(
+    // the LiveData of paged lists for the UI to observe
+    val pagedList: LiveData<PagedList<T>>,
+    // represents the network request status to show to the user
+    val networkState: LiveData<LoadState>,
+    // retries any failed requests.
+    val retry: () -> Unit
 )

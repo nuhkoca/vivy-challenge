@@ -28,13 +28,15 @@ internal object Versions {
     const val fragment_ktx = "1.2.4"
     const val recyclerview = "1.2.0-alpha02"
     const val constraint_layout = "2.0.0-beta4"
-    const val swipe_refresh_layout = "1.1.0-rc01"
 
     // Navigation
     const val navigation = "2.2.2"
 
     // Pagination
     const val pagination = "2.1.2"
+
+    // Room
+    const val room = "2.2.5"
 
     // Lifecycle
     const val lifecycle = "2.2.0"
@@ -48,7 +50,6 @@ internal object Versions {
     const val okhttp = "4.5.0"
 
     // Other stuff
-    const val lottie = "3.4.0"
     const val timber = "4.7.1"
     const val coil = "0.10.0"
     const val detekt = "1.7.0"

@@ -19,7 +19,7 @@ import android.content.Context
 import android.os.Bundle
 import androidx.fragment.app.FragmentFactory
 import androidx.navigation.fragment.NavHostFragment
-import io.github.nuhkoca.libbra.di.factory.VivyFragmentFactory
+import io.github.nuhkoca.vivy.di.factory.VivyFragmentFactory
 import io.github.nuhkoca.vivy.ui.di.MainScope
 import io.github.nuhkoca.vivy.util.ext.vivyApplication
 import javax.inject.Inject

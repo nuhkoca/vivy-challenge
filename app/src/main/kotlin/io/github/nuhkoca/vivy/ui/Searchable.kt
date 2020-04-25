@@ -13,23 +13,17 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.github.nuhkoca.vivy.binding.di
+package io.github.nuhkoca.vivy.ui
 
-import androidx.databinding.DataBindingComponent
-import dagger.Subcomponent
-import io.github.nuhkoca.vivy.binding.adapters.ImageBindingAdapter
-import io.github.nuhkoca.vivy.binding.adapters.TextBindingAdapter
+/**
+ * A helper interface to pass search query to child fragments
+ */
+interface Searchable {
 
-@BindingScope
-@Subcomponent(modules = [BindingModule::class])
-interface BindingComponent : DataBindingComponent {
-
-    @Subcomponent.Factory
-    interface Factory {
-        fun create(): BindingComponent
-    }
-
-    override fun getImageBindingAdapter(): ImageBindingAdapter
-
-    override fun getTextBindingAdapter(): TextBindingAdapter
+    /**
+     * Holds and passes the latest query
+     *
+     * @param query The search text
+     */
+    fun onQueryChange(query: String?)
 }

@@ -70,7 +70,6 @@ fun DependencyHandler.addJUnit5TestDependencies() {
  */
 fun DependencyHandler.addOkHttpBom() {
     implementation(platform(Dependencies.Network.okhttp_bom))
-    implementation(Dependencies.Network.okhttp)
     implementation(Dependencies.Network.okhttp_logging)
 }
 

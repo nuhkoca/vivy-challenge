@@ -129,10 +129,6 @@ dependencies {
     implementation(Dependencies.Core.kotlin)
     implementation(Dependencies.Core.coroutines)
 
-    implementation("androidx.room:room-runtime:2.2.5")
-    kapt("androidx.room:room-compiler:2.2.5")
-    implementation("androidx.room:room-ktx:2.2.5")
-
     implementation(Dependencies.UI.material)
     implementation(Dependencies.UI.core_ktx)
     implementation(Dependencies.UI.appcompat)
@@ -140,12 +136,15 @@ dependencies {
     implementation(Dependencies.UI.activity_ktx)
     implementation(Dependencies.UI.recylerview)
     implementation(Dependencies.UI.constraint_layout)
-    implementation(Dependencies.UI.swipe_refresh_layout)
 
     implementation(Dependencies.Navigation.nav_fragment_ktx)
     implementation(Dependencies.Navigation.nav_ui_ktx)
 
     implementation(Dependencies.Pagination.runtime_ktx)
+
+    implementation(Dependencies.Room.room_ktx)
+    implementation(Dependencies.Room.runtime_ktx)
+    kapt(Dependencies.Room.compiler)
 
     implementation(Dependencies.Lifecycle.lifecycle_extensions)
     implementation(Dependencies.Lifecycle.viewmodel_ktx)
@@ -162,7 +161,6 @@ dependencies {
 
     addOkHttpBom()
 
-    implementation(Dependencies.Other.lottie)
     implementation(Dependencies.Other.timber)
     implementation(Dependencies.Other.coil)
 

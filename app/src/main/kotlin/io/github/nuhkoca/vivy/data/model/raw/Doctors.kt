@@ -13,23 +13,18 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.github.nuhkoca.vivy.data.datasource
+package io.github.nuhkoca.vivy.data.model.raw
 
-import io.github.nuhkoca.vivy.data.Result
-import io.github.nuhkoca.vivy.data.model.domain.Doctors
-import kotlinx.coroutines.flow.Flow
+import kotlinx.serialization.Serializable
 
 /**
- * A common interface for children data sources to fetch list of doctors.
+ * A data class that includes list of doctors
+ *
+ * @property doctors The list of doctors
+ * @property lastKey The key to fetch next pages
  */
-interface DataSource {
-
-    /**
-     * Fetches list of doctors
-     *
-     * @param lastKey The key to fetch next pages
-     *
-     * @return [Doctors] within [Flow] builder
-     */
-    fun getDoctorList(lastKey: String?): Flow<Result<Doctors>>
-}
+@Serializable
+data class Doctors(
+    val doctors: List<Doctor>,
+    val lastKey: String?
+)

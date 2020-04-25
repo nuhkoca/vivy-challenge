@@ -15,19 +15,26 @@
  */
 package io.github.nuhkoca.vivy.db
 
+import androidx.paging.DataSource
 import androidx.room.Database
 import androidx.room.RoomDatabase
 import androidx.room.TypeConverters
 import io.github.nuhkoca.vivy.data.model.view.DoctorViewItem
-import io.github.nuhkoca.vivy.db.converters.Converters
+import io.github.nuhkoca.vivy.db.converters.DateTimeConverter
+import io.github.nuhkoca.vivy.db.converters.LocationConverter
 import io.github.nuhkoca.vivy.db.dao.DoctorsDao
 
-@Database(
-    entities = [DoctorViewItem::class],
-    version = VivyDB.VERSION,
-    exportSchema = false
-)
-@TypeConverters(Converters::class)
+/**
+ * The Room database to have the Single Source of Truth in order to avoid making network busy
+ * all the time. This implementation also provides a flexibility in terms of searching and filtering
+ * in case network doesn't support such endpoints. Otherwise search and filter operations won't
+ * work as expected. This is because [DataSource] only maps data by page. This means that each page
+ * will have its own filter. In addition to that, since there is no endpoint for searching doctors
+ * by name, handling this case is being too hard. As a result, using Single Source of Truth is the
+ * best case for such scenarios.
+ */
+@Database(entities = [DoctorViewItem::class], version = VivyDB.VERSION, exportSchema = false)
+@TypeConverters(LocationConverter::class, DateTimeConverter::class)
 abstract class VivyDB : RoomDatabase() {
 
     abstract val doctorsDao: DoctorsDao

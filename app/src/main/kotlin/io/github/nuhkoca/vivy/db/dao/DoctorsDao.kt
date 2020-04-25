@@ -15,19 +15,49 @@
  */
 package io.github.nuhkoca.vivy.db.dao
 
+import androidx.annotation.WorkerThread
+import androidx.lifecycle.LiveData
 import androidx.paging.DataSource
 import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import io.github.nuhkoca.vivy.data.model.view.DoctorViewItem
+import io.github.nuhkoca.vivy.db.VivyDB
+import java.util.*
 
+/**
+ * The Data Access Object for [VivyDB] to allow transactions for [DoctorViewItem]
+ */
 @Dao
 interface DoctorsDao {
 
-    @Query("SELECT * FROM doctors ORDER BY rating DESC")
+    @Query("SELECT * FROM doctors WHERE is_recent = 0 ORDER BY rating DESC")
     fun getDoctorList(): DataSource.Factory<Int, DoctorViewItem>
 
+    // No need to filter by is_recent because I want to see that doctor in case of filter, otherwise
+    // it won't be visible
+    @Query("SELECT * FROM doctors WHERE LOWER(name) LIKE :name ORDER BY rating DESC")
+    fun getDoctorsByName(name: String): DataSource.Factory<Int, DoctorViewItem>
+
+    @Query("SELECT * FROM doctors WHERE is_recent = 1 ORDER BY recent_visiting DESC LIMIT 3")
+    fun getRecentDoctorList(): LiveData<List<DoctorViewItem>>
+
+    @Query("SELECT * FROM doctors WHERE is_recent = 1 ORDER BY recent_visiting DESC")
+    fun getAllRecentDoctors(): List<DoctorViewItem>
+
+    @Query("SELECT COUNT(id) FROM doctors WHERE is_recent = 1")
+    fun getRecentCount(): Int
+
+    @WorkerThread
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insertAll(doctorViewItem: List<DoctorViewItem>)
+    fun insertAll(doctorViewItem: List<DoctorViewItem>)
+
+    @WorkerThread
+    @Query("UPDATE doctors SET recent_visiting=:time,is_recent = 1 WHERE id = :id")
+    fun updateVisitingTimeById(time: Date, id: String)
+
+    @WorkerThread
+    @Query("UPDATE doctors SET is_recent = 0 WHERE id = :id")
+    fun removeFromRecent(id: String)
 }

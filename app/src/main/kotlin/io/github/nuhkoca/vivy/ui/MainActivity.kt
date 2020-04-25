@@ -27,17 +27,25 @@ import androidx.navigation.ui.setupActionBarWithNavController
 import io.github.nuhkoca.vivy.R
 import io.github.nuhkoca.vivy.databinding.ActivityMainBinding
 import io.github.nuhkoca.vivy.util.ext.viewBinding
+import io.github.nuhkoca.vivy.util.searchview.DefaultQueryTextListener
 
 class MainActivity : AppCompatActivity() {
 
     private val binding by viewBinding(ActivityMainBinding::inflate)
 
     private lateinit var appBarConfiguration: AppBarConfiguration
-    private val navController by lazy {
-        val navHostFragment =
-            // Extension is not working, bug link: https://issuetracker.google.com/issues/142847973
-            supportFragmentManager.findFragmentById(R.id.nav_host_fragment) as NavHostFragment
-        navHostFragment.navController
+    private val navHostFragment by lazy {
+        // Extension is not working, bug link: https://issuetracker.google.com/issues/142847973
+        supportFragmentManager.findFragmentById(R.id.nav_host_fragment) as NavHostFragment
+    }
+
+    private val defaultQueryTextListener = object : DefaultQueryTextListener() {
+        override fun onQueryTextChange(newText: String?): Boolean {
+            val fragments =
+                navHostFragment.childFragmentManager.fragments.filterIsInstance<Searchable>()
+            fragments.forEach { searchable -> searchable.onQueryChange(newText) }
+            return true
+        }
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -45,7 +53,7 @@ class MainActivity : AppCompatActivity() {
         setContentView(binding.root)
         setSupportActionBar(binding.toolbar.toolbar)
         appBarConfiguration = AppBarConfiguration.Builder(R.id.doctorsFragment).build()
-        setupActionBarWithNavController(navController, appBarConfiguration)
+        setupActionBarWithNavController(navHostFragment.navController, appBarConfiguration)
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
@@ -54,12 +62,13 @@ class MainActivity : AppCompatActivity() {
         val searchManager = getSystemService(Context.SEARCH_SERVICE) as SearchManager
         (searchView?.actionView as? SearchView)?.apply {
             setSearchableInfo(searchManager.getSearchableInfo(componentName))
+            setOnQueryTextListener(defaultQueryTextListener)
         }
 
         return super.onCreateOptionsMenu(menu)
     }
 
     override fun onSupportNavigateUp(): Boolean {
-        return navController.navigateUp() || super.onSupportNavigateUp()
+        return navHostFragment.navController.navigateUp() || super.onSupportNavigateUp()
     }
 }

@@ -13,23 +13,21 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.github.nuhkoca.vivy.binding.di
+package io.github.nuhkoca.vivy.util.searchview
 
-import androidx.databinding.DataBindingComponent
-import dagger.Subcomponent
-import io.github.nuhkoca.vivy.binding.adapters.ImageBindingAdapter
-import io.github.nuhkoca.vivy.binding.adapters.TextBindingAdapter
+import androidx.appcompat.widget.SearchView
 
-@BindingScope
-@Subcomponent(modules = [BindingModule::class])
-interface BindingComponent : DataBindingComponent {
+/**
+ * The default [SearchView.OnQueryTextListener] that allows to eliminate unnecessary methods from
+ * UI.
+ */
+open class DefaultQueryTextListener : SearchView.OnQueryTextListener {
 
-    @Subcomponent.Factory
-    interface Factory {
-        fun create(): BindingComponent
+    override fun onQueryTextSubmit(query: String?): Boolean {
+        return false
     }
 
-    override fun getImageBindingAdapter(): ImageBindingAdapter
-
-    override fun getTextBindingAdapter(): TextBindingAdapter
+    override fun onQueryTextChange(newText: String?): Boolean {
+        return false
+    }
 }

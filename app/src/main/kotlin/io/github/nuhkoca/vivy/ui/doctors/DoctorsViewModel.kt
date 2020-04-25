@@ -18,21 +18,44 @@ package io.github.nuhkoca.vivy.ui.doctors
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.map
 import androidx.lifecycle.switchMap
-import androidx.paging.LivePagedListBuilder
-import androidx.paging.PagedList
+import androidx.lifecycle.viewModelScope
 import io.github.nuhkoca.vivy.data.model.view.DoctorViewItem
+import io.github.nuhkoca.vivy.domain.repository.Repository
 import io.github.nuhkoca.vivy.ui.di.MainScope
-import io.github.nuhkoca.vivy.ui.doctors.pagination.DoctorsDataSourceFactory
 import io.github.nuhkoca.vivy.util.event.SingleLiveEvent
 import io.github.nuhkoca.vivy.util.navigation.DetailContract
 import io.github.nuhkoca.vivy.util.recyclerview.LoadState
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.FlowPreview
+import kotlinx.coroutines.channels.ConflatedBroadcastChannel
+import kotlinx.coroutines.flow.asFlow
+import kotlinx.coroutines.flow.debounce
+import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.onEach
 import javax.inject.Inject
 
 @MainScope
-class DoctorsViewModel @Inject constructor(
-    private val factory: DoctorsDataSourceFactory
-) : ViewModel() {
+@OptIn(ExperimentalCoroutinesApi::class, FlowPreview::class)
+class DoctorsViewModel @Inject constructor(private val repository: Repository) : ViewModel() {
+
+    @ExperimentalCoroutinesApi
+    val queryChannel = ConflatedBroadcastChannel<String?>("")
+    private val trigger = SingleLiveEvent<String>()
+
+    private val queryLiveData = MutableLiveData<String>()
+
+    init {
+        trigger.call() // This is to trigger first data fetch
+
+        queryChannel.asFlow()
+            .debounce(DEBOUNCE_IN_MS)
+            .onEach { query -> queryLiveData.value = query }
+            .distinctUntilChanged()
+            .launchIn(viewModelScope)
+    }
 
     private val _doctorLiveData = MutableLiveData<DoctorViewItem>()
     val doctorLiveData: LiveData<DoctorViewItem> = _doctorLiveData
@@ -40,17 +63,23 @@ class DoctorsViewModel @Inject constructor(
     private val _navigationLiveData = SingleLiveEvent<Int>()
     val navigationLiveData: LiveData<Int> = _navigationLiveData
 
-    val doctorsLiveData: LiveData<PagedList<DoctorViewItem>> =
-        LivePagedListBuilder(factory, config).build()
+    private val repoResult = trigger.map { repository.getDoctorList() }
+    val doctors = queryLiveData.switchMap { query ->
+        if (query.isNotBlank()) {
+            repository.getDoctorsByName("%$query%")
+        } else {
+            repoResult.switchMap { result -> result.pagedList }
+        }
+    }
+    val networkState: LiveData<LoadState> = repoResult.switchMap { it.networkState }
 
-    val initialState: LiveData<LoadState> = factory.mutableDataSource.switchMap { it.initialLoad }
+    val recentDoctors = repository.getRecentDoctors()
 
-    val networkState: LiveData<LoadState> = factory.mutableDataSource.switchMap { it.networkState }
-
-    fun retry() = factory.mutableDataSource.value?.invalidate()
+    fun retry() = repoResult.value?.retry?.invoke()
 
     fun setSelectedDoctor(doctorViewItem: DoctorViewItem) {
         _doctorLiveData.value = doctorViewItem
+        repository.updateVisitingTimeById(doctorViewItem.id)
     }
 
     fun navigate() {
@@ -58,11 +87,6 @@ class DoctorsViewModel @Inject constructor(
     }
 
     private companion object {
-        private const val PAGE_SIZE_DEFAULT = 20
-
-        private val config = PagedList.Config.Builder().apply {
-            setPageSize(PAGE_SIZE_DEFAULT)
-            setEnablePlaceholders(true)
-        }.build()
+        private const val DEBOUNCE_IN_MS = 1500L
     }
 }

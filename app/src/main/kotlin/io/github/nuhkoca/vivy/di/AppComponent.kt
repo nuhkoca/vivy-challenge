@@ -19,9 +19,9 @@ import android.content.Context
 import dagger.BindsInstance
 import dagger.Component
 import dagger.Module
-import io.github.nuhkoca.libbra.di.factory.FragmentBindingsModule
-import io.github.nuhkoca.libbra.di.factory.ViewModelBuilderModule
 import io.github.nuhkoca.vivy.binding.di.BindingComponent
+import io.github.nuhkoca.vivy.di.factory.FragmentBindingsModule
+import io.github.nuhkoca.vivy.di.factory.ViewModelBuilderModule
 import io.github.nuhkoca.vivy.ui.di.MainComponent
 import javax.inject.Singleton
 

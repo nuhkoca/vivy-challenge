@@ -13,9 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.github.nuhkoca.vivy.data.model.domain
+package io.github.nuhkoca.vivy.data.model.raw
 
-import io.github.nuhkoca.vivy.data.model.Location
+import kotlinx.serialization.SerialName
+import kotlinx.serialization.Serializable
 
 /**
  * A data class that represents each doctor
@@ -25,7 +26,8 @@ import io.github.nuhkoca.vivy.data.model.Location
  * @property photoId The photo of doctor
  * @property rating The rating for doctor
  * @property address The address of doctor
- * @property location The location info for doctor venue
+ * @property latitude The latitude point
+ * @property longitude The longitude point
  * @property highlighted The flag that indicates whether or not doctor is highlighted
  * @property reviewCount The review count for doctor
  * @property specialityIds The speciality areas of doctor
@@ -37,21 +39,25 @@ import io.github.nuhkoca.vivy.data.model.Location
  * @property integration The integration info for doctor
  * @property translation The translation info for doctor
  */
+@Serializable
 data class Doctor(
     val id: String,
     val name: String,
     val photoId: String?,
-    val rating: Double,
+    val rating: Double?,
     val address: String,
-    val location: Location,
+    @SerialName("lat")
+    val latitude: Double,
+    @SerialName("lng")
+    val longitude: Double,
     val highlighted: Boolean,
-    val reviewCount: Int,
+    val reviewCount: Int?,
     val specialityIds: List<Int>,
     val source: String,
     val phoneNumber: String,
-    val email: String,
-    val website: String,
+    val email: String?,
+    val website: String?,
     val openingHours: List<String>,
-    val integration: String,
-    val translation: String
+    val integration: String?,
+    val translation: String?
 )

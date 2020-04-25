@@ -15,23 +15,44 @@
  */
 package io.github.nuhkoca.vivy.domain.repository
 
-import io.github.nuhkoca.vivy.data.Result
-import io.github.nuhkoca.vivy.data.datasource.DataSource
-import io.github.nuhkoca.vivy.data.model.domain.Doctors
-import kotlinx.coroutines.flow.Flow
+import androidx.lifecycle.LiveData
+import androidx.paging.DataSource
+import androidx.paging.PagedList
+import io.github.nuhkoca.vivy.data.model.Listing
+import io.github.nuhkoca.vivy.data.model.view.DoctorViewItem
 
 /**
  * A helper interface for repository layer to interact with [DataSource]
  */
-@FunctionalInterface
 interface Repository {
 
     /**
-     * Fetches list of doctors
+     * Returns a Listing for all doctors
      *
-     * @param lastKey The key to fetch next pages
-     *
-     * @return [Doctors] within [Flow] builder
+     * @return result in [Listing] wrapper
      */
-    fun getDoctorList(lastKey: String?): Flow<Result<Doctors>>
+    fun getDoctorList(): Listing<DoctorViewItem>
+
+    /**
+     * Returns list of doctors with given name constraint
+     *
+     * @param name The doctor name
+     *
+     * @return result in [LiveData] wrapper
+     */
+    fun getDoctorsByName(name: String): LiveData<PagedList<DoctorViewItem>>
+
+    /**
+     * Returns recent visited doctors by the most recent visiting time
+     *
+     * @return [DoctorViewItem] in LiveData wrapper
+     */
+    fun getRecentDoctors(): LiveData<List<DoctorViewItem>>
+
+    /**
+     * Updates visiting time of selected doctor
+     *
+     * @param id The doctor id
+     */
+    fun updateVisitingTimeById(id: String)
 }

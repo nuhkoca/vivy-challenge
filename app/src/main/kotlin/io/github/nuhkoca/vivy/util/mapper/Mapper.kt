@@ -28,5 +28,5 @@ interface Mapper<in T, out R> {
      *
      * @return [R]
      */
-    suspend fun map(item: T): R
+    fun map(item: T?): R
 }

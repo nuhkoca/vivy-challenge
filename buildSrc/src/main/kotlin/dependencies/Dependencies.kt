@@ -39,8 +39,6 @@ object Dependencies {
             "androidx.constraintlayout:constraintlayout:${Versions.constraint_layout}"
         const val fragment_ktx = "androidx.fragment:fragment-ktx:${Versions.fragment_ktx}"
         const val activity_ktx = "androidx.activity:activity-ktx:${Versions.activity_ktx}"
-        const val swipe_refresh_layout =
-            "androidx.swiperefreshlayout:swiperefreshlayout:${Versions.swipe_refresh_layout}"
     }
 
     object Navigation {
@@ -51,7 +49,13 @@ object Dependencies {
     }
 
     object Pagination {
-        const val runtime_ktx = "androidx.paging:paging-runtime:${Versions.pagination}"
+        const val runtime_ktx = "androidx.paging:paging-runtime-ktx:${Versions.pagination}"
+    }
+
+    object Room {
+        const val room_ktx = "androidx.room:room-ktx:${Versions.room}"
+        const val runtime_ktx = "androidx.room:room-runtime:${Versions.room}"
+        const val compiler = "androidx.room:room-compiler:${Versions.room}"
     }
 
     object Lifecycle {
@@ -75,12 +79,10 @@ object Dependencies {
         const val retrofit_serialization_adapter =
             "com.jakewharton.retrofit:retrofit2-kotlinx-serialization-converter:${Versions.retrofit_serialization_adapter}"
         internal const val okhttp_bom = "com.squareup.okhttp3:okhttp-bom:${Versions.okhttp}"
-        internal const val okhttp = "com.squareup.okhttp3:okhttp"
         internal const val okhttp_logging = "com.squareup.okhttp3:logging-interceptor"
     }
 
     object Other {
-        const val lottie = "com.airbnb.android:lottie:${Versions.lottie}"
         const val timber = "com.jakewharton.timber:timber:${Versions.timber}"
         const val coil = "io.coil-kt:coil:${Versions.coil}"
     }
