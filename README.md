@@ -44,6 +44,8 @@ To install the latest release version please respectively;
 * `cd scripts` on the main project
 *  `sh install-release.sh`
 
+**Please specify jvm-target as 1.8 following Preferences->Other Settings->Kotlin Compiler->Target JVM Version->1.8**, otherwise IDE might behave oddly.
+
 This will produce a production-ready apk on your device.
 
 ### Code style
