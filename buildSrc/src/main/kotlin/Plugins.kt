@@ -24,4 +24,5 @@ object Plugins {
     const val kotlinSerialization = "kotlinx-serialization"
     const val junit5 = "de.mannodermaus.android-junit5"
     const val safeArgs = "androidx.navigation.safeargs"
+    const val ossLicenses = "com.google.android.gms.oss-licenses-plugin"
 }

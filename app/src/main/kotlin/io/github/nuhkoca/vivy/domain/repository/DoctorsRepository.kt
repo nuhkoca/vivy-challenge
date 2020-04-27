@@ -82,7 +82,7 @@ class DoctorsRepository @Inject constructor(
             handleResponse = this::insertResultIntoDb,
             ioExecutor = ioExecutor
         )
-        // We use toLiveData Kotlin extension function here, you could also use LivePagedListBuilder
+        // We use toLiveData Kotlin extension function here, also LivePagedListBuilder can be used
         val livePagedList = vivyDB.doctorsDao.getDoctorList().toLiveData(
             pageSize = PAGE_SIZE_DEFAULT,
             boundaryCallback = boundaryCallback

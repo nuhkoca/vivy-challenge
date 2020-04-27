@@ -38,6 +38,7 @@ plugins {
     id(Plugins.kotlinSerialization)
     id(Plugins.junit5)
     id(Plugins.safeArgs)
+    id(Plugins.ossLicenses)
 }
 
 val baseUrl: String by project
@@ -163,6 +164,7 @@ dependencies {
 
     implementation(Dependencies.Other.timber)
     implementation(Dependencies.Other.coil)
+    implementation(Dependencies.Other.oss_licenses)
 
     addTestDependencies()
     addJUnit5TestDependencies()

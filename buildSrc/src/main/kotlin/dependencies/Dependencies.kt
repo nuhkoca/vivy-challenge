@@ -85,6 +85,7 @@ object Dependencies {
     object Other {
         const val timber = "com.jakewharton.timber:timber:${Versions.timber}"
         const val coil = "io.coil-kt:coil:${Versions.coil}"
+        const val oss_licenses = "com.google.android.gms:play-services-oss-licenses:${Versions.oss}"
     }
 }
 
@@ -118,6 +119,7 @@ internal object TestDependencies {
 
     // Mock
     const val mockK = "io.mockk:mockk:${Versions.mockK}"
+    const val mockK_android = "io.mockk:mockk-android:${Versions.mockK}"
     const val mock_web_server = "com.squareup.okhttp3:mockwebserver:${Versions.okhttp}"
 
     // JUnit5

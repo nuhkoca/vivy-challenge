@@ -15,6 +15,7 @@
  */
 package io.github.nuhkoca.vivy.domain.mapper
 
+import androidx.annotation.WorkerThread
 import io.github.nuhkoca.vivy.data.model.Location
 import io.github.nuhkoca.vivy.data.model.inline.Latitude
 import io.github.nuhkoca.vivy.data.model.inline.Longitude
@@ -43,6 +44,7 @@ class DoctorsViewItemMapper @Inject constructor() : Mapper<Doctors, DoctorsViewI
      *
      * @return [DoctorsViewItem]
      */
+    @WorkerThread
     override fun map(item: Doctors?): DoctorsViewItem {
         val doctors = mutableListOf<DoctorViewItem>()
 

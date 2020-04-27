@@ -19,6 +19,7 @@ import com.jakewharton.retrofit2.converter.kotlinx.serialization.asConverterFact
 import dagger.Binds
 import dagger.Module
 import dagger.Provides
+import io.github.nuhkoca.vivy.BuildConfig
 import io.github.nuhkoca.vivy.BuildConfig.BASE_URL
 import io.github.nuhkoca.vivy.data.model.raw.Doctors
 import io.github.nuhkoca.vivy.data.model.view.DoctorsViewItem
@@ -105,7 +106,11 @@ abstract class AppModule {
         @Singleton
         @InternalApi
         internal fun provideHttpLoggingInterceptor(): HttpLoggingInterceptor {
-            return HttpLoggingInterceptor().apply { level = HttpLoggingInterceptor.Level.BODY }
+            return HttpLoggingInterceptor().apply {
+                if (BuildConfig.DEBUG) {
+                    level = HttpLoggingInterceptor.Level.BODY
+                }
+            }
         }
 
         @Provides

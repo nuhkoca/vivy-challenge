@@ -12,7 +12,11 @@
         tools:layout="@layout/doctors_fragment">
         <action
             android:id="@+id/action_doctorsFragment_to_doctorDetailFragment"
-            app:destination="@id/doctorDetailFragment" />
+            app:destination="@id/doctorDetailFragment"
+            app:enterAnim="@anim/fragment_open_enter"
+            app:exitAnim="@anim/fragment_open_exit"
+            app:popEnterAnim="@android:anim/fade_in"
+            app:popExitAnim="@android:anim/fade_out" />
     </fragment>
     <fragment
         android:id="@+id/doctorDetailFragment"

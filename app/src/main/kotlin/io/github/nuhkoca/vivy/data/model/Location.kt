@@ -26,5 +26,9 @@ import io.github.nuhkoca.vivy.data.model.inline.Longitude
  */
 data class Location(val latitude: Latitude, val longitude: Longitude) {
 
-    inline val isNull: Boolean get() = latitude.value.isNaN() || longitude.value.isNaN()
+    inline val isNull: Boolean
+        get() = latitude.value == 0.0 ||
+            latitude.value.isNaN() ||
+            longitude.value.isNaN() ||
+            longitude.value == 0.0
 }

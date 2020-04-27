@@ -13,6 +13,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+@file:JvmName("ViewKt")
+
 package io.github.nuhkoca.vivy.util.ext
 
 import android.view.View

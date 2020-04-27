@@ -19,6 +19,7 @@ import android.app.SearchManager
 import android.content.Context
 import android.os.Bundle
 import android.view.Menu
+import android.view.MenuItem
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.SearchView
 import androidx.navigation.fragment.NavHostFragment
@@ -26,6 +27,7 @@ import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.setupActionBarWithNavController
 import io.github.nuhkoca.vivy.R
 import io.github.nuhkoca.vivy.databinding.ActivityMainBinding
+import io.github.nuhkoca.vivy.util.ext.startLicenseActivity
 import io.github.nuhkoca.vivy.util.ext.viewBinding
 import io.github.nuhkoca.vivy.util.searchview.DefaultQueryTextListener
 
@@ -40,7 +42,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     private val defaultQueryTextListener = object : DefaultQueryTextListener() {
-        override fun onQueryTextChange(newText: String?): Boolean {
+        override fun onQueryTextChange(newText: String): Boolean {
             val fragments =
                 navHostFragment.childFragmentManager.fragments.filterIsInstance<Searchable>()
             fragments.forEach { searchable -> searchable.onQueryChange(newText) }
@@ -66,6 +68,16 @@ class MainActivity : AppCompatActivity() {
         }
 
         return super.onCreateOptionsMenu(menu)
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        return when (item.itemId) {
+            R.id.menu_library_item -> {
+                startLicenseActivity()
+                true
+            }
+            else -> super.onOptionsItemSelected(item)
+        }
     }
 
     override fun onSupportNavigateUp(): Boolean {

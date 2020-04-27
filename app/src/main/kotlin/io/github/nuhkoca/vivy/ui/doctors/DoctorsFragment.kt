@@ -34,7 +34,6 @@ import io.github.nuhkoca.vivy.ui.doctors.adapter.RecentDoctorsAdapter
 import io.github.nuhkoca.vivy.util.event.SingleLiveEvent
 import io.github.nuhkoca.vivy.util.ext.composeEmail
 import io.github.nuhkoca.vivy.util.ext.dialPhoneNumber
-import io.github.nuhkoca.vivy.util.ext.i
 import io.github.nuhkoca.vivy.util.ext.openWebPage
 import io.github.nuhkoca.vivy.util.ext.showMap
 import io.github.nuhkoca.vivy.util.ext.viewBinding
@@ -49,6 +48,7 @@ import javax.inject.Inject
  * Issue tracker: https://issuetracker.google.com/issues/153364901
  */
 @MainScope
+@Suppress("LongParameterList")
 class DoctorsFragment @Inject constructor(
     private val viewModelFactory: ViewModelProvider.Factory,
     private val doctorsAdapter: DoctorsAdapter,
@@ -113,7 +113,7 @@ class DoctorsFragment @Inject constructor(
     }
 
     @ExperimentalCoroutinesApi
-    override fun onQueryChange(query: String?) {
+    override fun onQueryChange(query: String) {
         viewModel.queryChannel.offer(query)
     }
 }

@@ -3,6 +3,7 @@
 
     <string name="label_doctor_detail">Detail</string>
     <string name="menu_search_item_title">Search</string>
+    <string name="menu_library_item_title">Open source libraries</string>
     <string name="menu_search_item_hint">Search Vivy</string>
 
     <!-- Context Menu -->

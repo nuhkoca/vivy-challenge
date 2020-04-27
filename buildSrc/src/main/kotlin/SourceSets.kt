@@ -78,7 +78,7 @@ internal object Test : SourceSetCreator {
         project: Project
     ): AndroidSourceSet {
         return namedDomainObjectContainer.getByName(name).apply {
-            java.srcDir("src/test/kotlin")
+            java.srcDirs("src/sharedTest/kotlin", "src/test/kotlin")
             resources.srcDir("src/test/resources")
             assets.srcDir("src/test/assets")
         }
@@ -96,7 +96,7 @@ internal object AndroidTest : SourceSetCreator {
         project: Project
     ): AndroidSourceSet {
         return namedDomainObjectContainer.getByName(name).apply {
-            java.srcDir("src/androidTest/kotlin")
+            java.srcDirs("src/sharedTest/kotlin", "src/androidTest/kotlin")
             resources.srcDir("src/androidTest/resources")
             assets.srcDir("src/androidTest/assets")
         }

@@ -40,9 +40,13 @@ fun DependencyHandler.addTestDependencies() {
     androidTestImplementation(TestDependencies.junit)
     androidTestImplementation(TestDependencies.rules)
     androidTestImplementation(TestDependencies.truth_ext)
+    androidTestImplementation(TestDependencies.mockK_android)
     androidTestImplementation(TestDependencies.runner)
+    androidTestImplementation(TestDependencies.arch_core)
     androidTestImplementation(TestDependencies.espresso_core)
     androidTestImplementation(TestDependencies.idling_resource)
+    androidTestImplementation(TestDependencies.coroutines_core)
+
     androidTestUtil(TestDependencies.orchestrator)
 
     debugImplementation(TestDependencies.fragment)

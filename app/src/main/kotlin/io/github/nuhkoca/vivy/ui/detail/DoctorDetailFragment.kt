@@ -31,6 +31,13 @@ import io.github.nuhkoca.vivy.ui.di.MainScope
 import io.github.nuhkoca.vivy.ui.doctors.DoctorsViewModel
 import javax.inject.Inject
 
+/*
+ * Cannot test this class along with FragmentFactory and navGraphViewModels delegation. If I don't
+ * use FragmentFactory and init viewModel with viewModels delegations I am able to test. However,
+ * I didn't want to change the whole logic.
+ *
+ * Issue tracker: https://issuetracker.google.com/issues/153364901
+ */
 @MainScope
 class DoctorDetailFragment @Inject constructor(
     private val viewModelFactory: ViewModelProvider.Factory

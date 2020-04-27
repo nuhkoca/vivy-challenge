@@ -23,11 +23,11 @@ import androidx.appcompat.widget.SearchView
  */
 open class DefaultQueryTextListener : SearchView.OnQueryTextListener {
 
-    override fun onQueryTextSubmit(query: String?): Boolean {
+    override fun onQueryTextSubmit(query: String): Boolean {
         return false
     }
 
-    override fun onQueryTextChange(newText: String?): Boolean {
+    override fun onQueryTextChange(newText: String): Boolean {
         return false
     }
 }

@@ -28,7 +28,6 @@ import io.github.nuhkoca.vivy.databinding.LayoutDoctorItemBinding
 import io.github.nuhkoca.vivy.databinding.LayoutDoctorItemTitleBinding
 import io.github.nuhkoca.vivy.ui.di.MainScope
 import io.github.nuhkoca.vivy.util.event.SingleLiveEvent
-import io.github.nuhkoca.vivy.util.ext.i
 import io.github.nuhkoca.vivy.util.recyclerview.AdapterDataObserverProxy
 import io.github.nuhkoca.vivy.util.recyclerview.BaseViewHolder
 import javax.inject.Inject
@@ -115,7 +114,12 @@ class DoctorsAdapter @Inject constructor(
             menuInfo: ContextMenu.ContextMenuInfo?
         ) {
             menu.setHeaderTitle(R.string.context_menu_header_title)
-            menu.add(bindingAdapterPosition - 1, ITEM_ID_MAP, ORDER_MAP, R.string.context_menu_option_map)
+            menu.add(
+                bindingAdapterPosition - 1,
+                ITEM_ID_MAP,
+                ORDER_MAP,
+                R.string.context_menu_option_map
+            )
             menu.add(
                 bindingAdapterPosition - 1,
                 ITEM_ID_CALL,

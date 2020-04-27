@@ -7,4 +7,10 @@
         android:title="@string/menu_search_item_title"
         app:actionViewClass="androidx.appcompat.widget.SearchView"
         app:showAsAction="ifRoom|collapseActionView" />
+    <item
+        android:id="@+id/menu_library_item"
+        android:icon="@drawable/ic_library"
+        android:orderInCategory="101"
+        android:title="@string/menu_library_item_title"
+        app:showAsAction="ifRoom" />
 </menu>

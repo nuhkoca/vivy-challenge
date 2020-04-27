@@ -12,6 +12,13 @@
         <item name="snackbarTextViewStyle">@style/Vivy.Snackbar.TextAppearance</item>
     </style>
 
+    <style name="OssTheme" parent="Theme.MaterialComponents.DayNight.DarkActionBar.Bridge">
+        <item name="colorPrimary">@color/colorPrimary</item>
+        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
+        <item name="colorAccent">@color/colorAccent</item>
+        <item name="fontFamily">@font/montserrat</item>
+    </style>
+
     <style name="Vivy" />
 
     <style name="Vivy.Doctor" />

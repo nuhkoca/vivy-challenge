@@ -25,5 +25,5 @@ interface Searchable {
      *
      * @param query The search text
      */
-    fun onQueryChange(query: String?)
+    fun onQueryChange(query: String)
 }

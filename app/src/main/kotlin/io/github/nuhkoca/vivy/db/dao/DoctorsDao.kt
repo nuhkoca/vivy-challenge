@@ -15,6 +15,7 @@
  */
 package io.github.nuhkoca.vivy.db.dao
 
+import androidx.annotation.VisibleForTesting
 import androidx.annotation.WorkerThread
 import androidx.lifecycle.LiveData
 import androidx.paging.DataSource
@@ -35,10 +36,17 @@ interface DoctorsDao {
     @Query("SELECT * FROM doctors WHERE is_recent = 0 ORDER BY rating DESC")
     fun getDoctorList(): DataSource.Factory<Int, DoctorViewItem>
 
+    // We need this separate query since [getDoctorList] is in relation with Boundary Callback and
+    // search query is not proper, application consistently tries to hit service as it understands
+    // database is empty
     // No need to filter by is_recent because I want to see that doctor in case of filter, otherwise
     // it won't be visible
     @Query("SELECT * FROM doctors WHERE LOWER(name) LIKE :name ORDER BY rating DESC")
     fun getDoctorsByName(name: String): DataSource.Factory<Int, DoctorViewItem>
+
+    @VisibleForTesting
+    @Query("SELECT * FROM doctors WHERE id =:id")
+    fun getDoctorsById(id: String): DoctorViewItem
 
     @Query("SELECT * FROM doctors WHERE is_recent = 1 ORDER BY recent_visiting DESC LIMIT 3")
     fun getRecentDoctorList(): LiveData<List<DoctorViewItem>>

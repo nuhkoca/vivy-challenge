@@ -43,11 +43,14 @@ import javax.inject.Inject
 class DoctorsViewModel @Inject constructor(private val repository: Repository) : ViewModel() {
 
     @ExperimentalCoroutinesApi
-    val queryChannel = ConflatedBroadcastChannel<String?>("")
+    val queryChannel = ConflatedBroadcastChannel(EMPTY_QUERY)
 
     private val queryLiveData = MutableLiveData<String>()
+    private val trigger = SingleLiveEvent<Unit>()
 
     init {
+        trigger.call() // Just for the trigger repository
+
         queryChannel.asFlow()
             .debounce(DEBOUNCE_IN_MS)
             .onEach { query -> queryLiveData.value = query }
@@ -61,12 +64,14 @@ class DoctorsViewModel @Inject constructor(private val repository: Repository) :
     private val _navigationLiveData = SingleLiveEvent<Int>()
     val navigationLiveData: LiveData<Int> = _navigationLiveData
 
-    private val repoResult = queryLiveData.map { repository.getDoctorList() }
+    private val repoResult = trigger.map { repository.getDoctorList() }
     val doctors = repoResult.switchMap { result ->
-        if (!queryChannel.value.isNullOrBlank()) {
-            repository.getDoctorsByName("%${queryChannel.value}%")
-        } else {
-            result.pagedList
+        queryLiveData.switchMap { query ->
+            if (!query.isNullOrBlank()) {
+                repository.getDoctorsByName("%$query%")
+            } else {
+                result.pagedList
+            }
         }
     }
     val networkState: LiveData<LoadState> = repoResult.switchMap { it.networkState }
@@ -87,6 +92,7 @@ class DoctorsViewModel @Inject constructor(private val repository: Repository) :
     }
 
     private companion object {
+        private const val EMPTY_QUERY = ""
         private const val DEBOUNCE_IN_MS = 1500L
     }
 }
