@@ -35,6 +35,7 @@ import kotlinx.coroutines.flow.debounce
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @MainScope
@@ -43,13 +44,10 @@ class DoctorsViewModel @Inject constructor(private val repository: Repository) :
 
     @ExperimentalCoroutinesApi
     val queryChannel = ConflatedBroadcastChannel<String?>("")
-    private val trigger = SingleLiveEvent<String>()
 
     private val queryLiveData = MutableLiveData<String>()
 
     init {
-        trigger.call() // This is to trigger first data fetch
-
         queryChannel.asFlow()
             .debounce(DEBOUNCE_IN_MS)
             .onEach { query -> queryLiveData.value = query }
@@ -63,12 +61,12 @@ class DoctorsViewModel @Inject constructor(private val repository: Repository) :
     private val _navigationLiveData = SingleLiveEvent<Int>()
     val navigationLiveData: LiveData<Int> = _navigationLiveData
 
-    private val repoResult = trigger.map { repository.getDoctorList() }
-    val doctors = queryLiveData.switchMap { query ->
-        if (query.isNotBlank()) {
-            repository.getDoctorsByName("%$query%")
+    private val repoResult = queryLiveData.map { repository.getDoctorList() }
+    val doctors = repoResult.switchMap { result ->
+        if (!queryChannel.value.isNullOrBlank()) {
+            repository.getDoctorsByName("%${queryChannel.value}%")
         } else {
-            repoResult.switchMap { result -> result.pagedList }
+            result.pagedList
         }
     }
     val networkState: LiveData<LoadState> = repoResult.switchMap { it.networkState }
@@ -78,8 +76,10 @@ class DoctorsViewModel @Inject constructor(private val repository: Repository) :
     fun retry() = repoResult.value?.retry?.invoke()
 
     fun setSelectedDoctor(doctorViewItem: DoctorViewItem) {
-        _doctorLiveData.value = doctorViewItem
-        repository.updateVisitingTimeById(doctorViewItem.id)
+        viewModelScope.launch {
+            _doctorLiveData.value = doctorViewItem
+            repository.updateVisitingTimeById(doctorViewItem.id)
+        }
     }
 
     fun navigate() {

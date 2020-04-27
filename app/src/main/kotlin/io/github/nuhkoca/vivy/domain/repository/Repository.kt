@@ -54,5 +54,5 @@ interface Repository {
      *
      * @param id The doctor id
      */
-    fun updateVisitingTimeById(id: String)
+    suspend fun updateVisitingTimeById(id: String)
 }

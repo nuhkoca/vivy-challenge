@@ -55,9 +55,9 @@ interface DoctorsDao {
 
     @WorkerThread
     @Query("UPDATE doctors SET recent_visiting=:time,is_recent = 1 WHERE id = :id")
-    fun updateVisitingTimeById(time: Date, id: String)
+    suspend fun updateVisitingTimeById(time: Date, id: String)
 
     @WorkerThread
     @Query("UPDATE doctors SET is_recent = 0 WHERE id = :id")
-    fun removeFromRecent(id: String)
+    suspend fun removeFromRecent(id: String)
 }

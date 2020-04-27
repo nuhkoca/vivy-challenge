@@ -18,7 +18,7 @@ internal object Versions {
     const val kotlin = "1.3.72"
     const val kotlinx_serialization_runtime = "0.20.0"
     const val coroutines = "1.3.4"
-    const val lint = "27.1.0-alpha06"
+    const val lint = "27.1.0-alpha07"
 
     // UI
     const val material = "1.2.0-alpha06"

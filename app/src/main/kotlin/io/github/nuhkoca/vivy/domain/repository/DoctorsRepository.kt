@@ -27,8 +27,11 @@ import io.github.nuhkoca.vivy.data.model.view.DoctorsViewItem
 import io.github.nuhkoca.vivy.data.service.DoctorsService
 import io.github.nuhkoca.vivy.db.VivyDB
 import io.github.nuhkoca.vivy.domain.boundary.DoctorsBoundaryCallback
+import io.github.nuhkoca.vivy.util.coroutines.DispatcherProvider
 import io.github.nuhkoca.vivy.util.ext.w
 import io.github.nuhkoca.vivy.util.mapper.Mapper
+import kotlinx.coroutines.NonCancellable
+import kotlinx.coroutines.withContext
 import java.util.*
 import java.util.concurrent.ExecutorService
 import javax.inject.Inject
@@ -41,13 +44,15 @@ import javax.inject.Singleton
  * @param service The remote service
  * @param mapper The mapper to convert between types
  * @param ioExecutor The executor to execute database processes in the background thread
+ * @param dispatcherProvider The dispatcher to execute processes under a specific thread
  */
 @Singleton
 class DoctorsRepository @Inject constructor(
     private val vivyDB: VivyDB,
     private val service: DoctorsService,
     private val mapper: @JvmSuppressWildcards Mapper<Doctors, DoctorsViewItem>,
-    private val ioExecutor: ExecutorService
+    private val ioExecutor: ExecutorService,
+    private val dispatcherProvider: DispatcherProvider
 ) : Repository {
 
     /**
@@ -113,17 +118,20 @@ class DoctorsRepository @Inject constructor(
     }
 
     /**
-     * Updates visiting time of selected doctor
+     * Updates visiting time of selected doctor. Wrapped with [NonCancellable] context as this
+     * job must be done in any case. In the event of user might close the screen before the
+     * transaction is done, changes won't be reflected to UI. Therefore this job should be always
+     * alive.
      *
      * @param id The doctor id
      */
     @WorkerThread
-    override fun updateVisitingTimeById(id: String) {
-        ioExecutor.execute {
+    override suspend fun updateVisitingTimeById(id: String) {
+        withContext(NonCancellable + dispatcherProvider.io) {
             vivyDB.doctorsDao.updateVisitingTimeById(Date(System.currentTimeMillis()), id)
             val count = vivyDB.doctorsDao.getRecentCount()
 
-            if (count > 3) {
+            if (count > RECENT_DOCTOR_COUNT_MAX) {
                 w { "Count is higher than 3 so that oldest item is being deleted from recent list" }
                 val items = vivyDB.doctorsDao.getAllRecentDoctors()
                 val oldestId = items.last().id
@@ -134,5 +142,6 @@ class DoctorsRepository @Inject constructor(
 
     private companion object {
         private const val PAGE_SIZE_DEFAULT = 20
+        private const val RECENT_DOCTOR_COUNT_MAX = 3
     }
 }

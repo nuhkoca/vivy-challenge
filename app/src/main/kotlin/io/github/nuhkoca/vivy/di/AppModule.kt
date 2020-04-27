@@ -28,6 +28,8 @@ import io.github.nuhkoca.vivy.db.di.DatabaseModule
 import io.github.nuhkoca.vivy.domain.mapper.DoctorsViewItemMapper
 import io.github.nuhkoca.vivy.domain.repository.DoctorsRepository
 import io.github.nuhkoca.vivy.domain.repository.Repository
+import io.github.nuhkoca.vivy.util.coroutines.DefaultDispatcherProvider
+import io.github.nuhkoca.vivy.util.coroutines.DispatcherProvider
 import io.github.nuhkoca.vivy.util.mapper.Mapper
 import kotlinx.serialization.UnstableDefault
 import kotlinx.serialization.json.Json
@@ -55,6 +57,12 @@ abstract class AppModule {
     internal abstract fun bindDoctorsViewItemMapper(
         doctorsViewItemMapper: DoctorsViewItemMapper
     ): Mapper<Doctors, DoctorsViewItem>
+
+    @Binds
+    @Singleton
+    internal abstract fun bindDispatcherProvider(
+        defaultDispatcherProvider: DefaultDispatcherProvider
+    ): DispatcherProvider
 
     @Module
     internal companion object {
