@@ -92,7 +92,7 @@ class DoctorsRepositoryTest : BaseTestClass() {
     override fun setUp() {
         super.setUp()
 
-        every { vivyDB.doctorsDao.getRecentDoctorList() } answers {
+        every { vivyDB.doctorsDao.getRecentDoctorList(any()) } answers {
             MutableLiveData(listOfDoctorViewItem.take(3))
         }
 
@@ -115,7 +115,7 @@ class DoctorsRepositoryTest : BaseTestClass() {
     @Test
     fun `repository should return recent doctors`() {
         // When
-        val recentDoctors = repository.getRecentDoctors()
+        val recentDoctors = repository.getRecentDoctors("%%")
 
         lifeCycleTestOwner.onResume()
         recentDoctors.observe(lifeCycleTestOwner, listObserver)
@@ -138,7 +138,7 @@ class DoctorsRepositoryTest : BaseTestClass() {
         }
 
         // Verify
-        verify(atLeast = 1) { vivyDB.doctorsDao.getRecentDoctorList() }
+        verify(atLeast = 1) { vivyDB.doctorsDao.getRecentDoctorList(any()) }
         confirmVerified(vivyDB)
     }
 
@@ -150,7 +150,7 @@ class DoctorsRepositoryTest : BaseTestClass() {
 
         // When
         repository.updateVisitingTimeById(id)
-        val recentDoctors = repository.getRecentDoctors()
+        val recentDoctors = repository.getRecentDoctors("%%")
 
         lifeCycleTestOwner.onResume()
         recentDoctors.observe(lifeCycleTestOwner, listObserver)
@@ -177,7 +177,7 @@ class DoctorsRepositoryTest : BaseTestClass() {
         }
 
         // Verify
-        verify(atLeast = 1) { vivyDB.doctorsDao.getRecentDoctorList() }
+        verify(atLeast = 1) { vivyDB.doctorsDao.getRecentDoctorList(any()) }
         verify(atLeast = 1) { vivyDB.doctorsDao.getRecentCount() }
 
         confirmVerified(vivyDB)

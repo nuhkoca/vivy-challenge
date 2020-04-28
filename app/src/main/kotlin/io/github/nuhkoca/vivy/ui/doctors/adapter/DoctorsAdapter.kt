@@ -27,14 +27,20 @@ import io.github.nuhkoca.vivy.data.model.view.DoctorViewItem
 import io.github.nuhkoca.vivy.databinding.LayoutDoctorItemBinding
 import io.github.nuhkoca.vivy.databinding.LayoutDoctorItemTitleBinding
 import io.github.nuhkoca.vivy.ui.di.MainScope
+import io.github.nuhkoca.vivy.util.recyclerview.MenuItem.Companion.ITEM_ID_CALL
+import io.github.nuhkoca.vivy.util.recyclerview.MenuItem.Companion.ITEM_ID_EMAIL
+import io.github.nuhkoca.vivy.util.recyclerview.MenuItem.Companion.ITEM_ID_MAP
+import io.github.nuhkoca.vivy.util.recyclerview.MenuItem.Companion.ITEM_ID_WEBSITE
 import io.github.nuhkoca.vivy.util.event.SingleLiveEvent
 import io.github.nuhkoca.vivy.util.recyclerview.AdapterDataObserverProxy
 import io.github.nuhkoca.vivy.util.recyclerview.BaseViewHolder
+import io.github.nuhkoca.vivy.util.recyclerview.MenuItem
 import javax.inject.Inject
 
 @MainScope
 class DoctorsAdapter @Inject constructor(
-    private val itemClickLiveData: SingleLiveEvent<DoctorViewItem>
+    private val itemClickLiveData: SingleLiveEvent<DoctorViewItem>,
+    private val menuClickLiveData: SingleLiveEvent<MenuItem>
 ) : PagedListAdapter<DoctorViewItem, RecyclerView.ViewHolder>(DIFF_CALLBACK) {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
@@ -77,6 +83,11 @@ class DoctorsAdapter @Inject constructor(
         super.unregisterAdapterDataObserver(AdapterDataObserverProxy(observer, 1))
     }
 
+    override fun onViewRecycled(holder: RecyclerView.ViewHolder) {
+        super.onViewRecycled(holder)
+        holder.itemView.setOnClickListener(null)
+    }
+
     override fun getItemViewType(position: Int): Int {
         return when (position) {
             0 -> TYPE_HEADER
@@ -114,72 +125,42 @@ class DoctorsAdapter @Inject constructor(
             menuInfo: ContextMenu.ContextMenuInfo?
         ) {
             menu.setHeaderTitle(R.string.context_menu_header_title)
-            menu.add(
-                bindingAdapterPosition - 1,
-                ITEM_ID_MAP,
-                ORDER_MAP,
-                R.string.context_menu_option_map
-            )
-            menu.add(
-                bindingAdapterPosition - 1,
-                ITEM_ID_CALL,
-                ORDER_CALL,
-                R.string.context_menu_option_call
-            )
-            menu.add(
-                bindingAdapterPosition - 1,
-                ITEM_ID_EMAIL,
-                ORDER_EMAIL,
-                R.string.context_menu_option_email
-            )
-            menu.add(
-                bindingAdapterPosition - 1,
-                ITEM_ID_WEBSITE,
-                ORDER_WEBSITE,
-                R.string.context_menu_option_website
-            )
+            menu.add(R.string.context_menu_option_map).setOnMenuItemClickListener {
+                menuClickLiveData.value =
+                    MenuItem(
+                        ITEM_ID_MAP,
+                        getItem(bindingAdapterPosition - 1)?.location
+                    )
+                true
+            }
+            menu.add(R.string.context_menu_option_call).setOnMenuItemClickListener {
+                menuClickLiveData.value =
+                    MenuItem(
+                        ITEM_ID_CALL,
+                        getItem(bindingAdapterPosition - 1)?.phoneNumber
+                    )
+                true
+            }
+            menu.add(R.string.context_menu_option_email).setOnMenuItemClickListener {
+                menuClickLiveData.value =
+                    MenuItem(
+                        ITEM_ID_EMAIL,
+                        getItem(bindingAdapterPosition - 1)?.email
+                    )
+                true
+            }
+            menu.add(R.string.context_menu_option_website).setOnMenuItemClickListener {
+                menuClickLiveData.value =
+                    MenuItem(
+                        ITEM_ID_WEBSITE,
+                        getItem(bindingAdapterPosition - 1)?.website
+                    )
+                true
+            }
         }
     }
 
-    /**
-     * Returns location of the selected item
-     *
-     * @param position The item position
-     */
-    fun getLocationOf(position: Int) = getItem(position)?.location
-
-    /**
-     * Returns phone number of the selected item
-     *
-     * @param position The item position
-     */
-    fun getPhoneOf(position: Int) = getItem(position)?.phoneNumber
-
-    /**
-     * Returns email address of the selected item
-     *
-     * @param position The item position
-     */
-    fun getEmailOf(position: Int) = getItem(position)?.email
-
-    /**
-     * Returns website of the selected item
-     *
-     * @param position The item position
-     */
-    fun getWebsiteOf(position: Int) = getItem(position)?.website
-
     companion object {
-        const val ITEM_ID_MAP = 101
-        const val ITEM_ID_CALL = 102
-        const val ITEM_ID_EMAIL = 103
-        const val ITEM_ID_WEBSITE = 104
-
-        private const val ORDER_MAP = 0
-        private const val ORDER_CALL = 1
-        private const val ORDER_EMAIL = 2
-        private const val ORDER_WEBSITE = 3
-
         private const val TYPE_HEADER = 0
         private const val TYPE_ITEM = 1
 

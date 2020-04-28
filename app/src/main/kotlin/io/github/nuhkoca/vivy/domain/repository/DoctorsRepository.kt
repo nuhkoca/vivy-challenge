@@ -110,11 +110,13 @@ class DoctorsRepository @Inject constructor(
     /**
      * Returns recent visited doctors by the most recent visiting time
      *
+     * @param name The doctor name
+     *
      * @return [DoctorViewItem] in LiveData wrapper
      */
     @MainThread
-    override fun getRecentDoctors(): LiveData<List<DoctorViewItem>> {
-        return vivyDB.doctorsDao.getRecentDoctorList()
+    override fun getRecentDoctors(name: String): LiveData<List<DoctorViewItem>> {
+        return vivyDB.doctorsDao.getRecentDoctorList(name)
     }
 
     /**

@@ -16,7 +16,6 @@
 package io.github.nuhkoca.vivy.ui.doctors
 
 import android.os.Bundle
-import android.view.MenuItem
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.observe
@@ -24,12 +23,18 @@ import androidx.navigation.fragment.findNavController
 import androidx.navigation.navGraphViewModels
 import androidx.recyclerview.widget.MergeAdapter
 import io.github.nuhkoca.vivy.R
+import io.github.nuhkoca.vivy.data.model.Location
 import io.github.nuhkoca.vivy.data.model.view.DoctorViewItem
 import io.github.nuhkoca.vivy.databinding.DoctorsFragmentBinding
 import io.github.nuhkoca.vivy.ui.Searchable
 import io.github.nuhkoca.vivy.ui.di.MainScope
 import io.github.nuhkoca.vivy.ui.doctors.adapter.DoctorsAdapter
 import io.github.nuhkoca.vivy.ui.doctors.adapter.DoctorsLoadStateAdapter
+import io.github.nuhkoca.vivy.util.recyclerview.MenuItem
+import io.github.nuhkoca.vivy.util.recyclerview.MenuItem.Companion.ITEM_ID_CALL
+import io.github.nuhkoca.vivy.util.recyclerview.MenuItem.Companion.ITEM_ID_EMAIL
+import io.github.nuhkoca.vivy.util.recyclerview.MenuItem.Companion.ITEM_ID_MAP
+import io.github.nuhkoca.vivy.util.recyclerview.MenuItem.Companion.ITEM_ID_WEBSITE
 import io.github.nuhkoca.vivy.ui.doctors.adapter.RecentDoctorsAdapter
 import io.github.nuhkoca.vivy.util.event.SingleLiveEvent
 import io.github.nuhkoca.vivy.util.ext.composeEmail
@@ -55,7 +60,8 @@ class DoctorsFragment @Inject constructor(
     private val recentDoctorsAdapter: RecentDoctorsAdapter,
     private val loadStateAdapter: DoctorsLoadStateAdapter,
     private val itemClickLiveData: SingleLiveEvent<DoctorViewItem>,
-    private val retryLiveData: SingleLiveEvent<Unit>
+    private val retryLiveData: SingleLiveEvent<Unit>,
+    private val menuClickLiveData: SingleLiveEvent<MenuItem>
 ) : Fragment(R.layout.doctors_fragment), Searchable {
 
     private val mergeAdapter = MergeAdapter(recentDoctorsAdapter, doctorsAdapter, loadStateAdapter)
@@ -75,41 +81,22 @@ class DoctorsFragment @Inject constructor(
             viewModel.navigate()
         }
         retryLiveData.observe(viewLifecycleOwner) { viewModel.retry() }
+        menuClickLiveData.observe(viewLifecycleOwner) {
+            when (it.id) {
+                ITEM_ID_MAP -> showMap(it.item as Location)
+                ITEM_ID_CALL -> dialPhoneNumber(it.item as String)
+                ITEM_ID_EMAIL -> composeEmail(it.item as String)
+                ITEM_ID_WEBSITE -> openWebPage(it.item as String)
+            }
+        }
+        registerForContextMenu(this)
     }
 
     private fun observeViewModel() = with(viewModel) {
-        doctors.observe(viewLifecycleOwner) { doctorsAdapter.submitList(it) }
-        recentDoctors.observe(viewLifecycleOwner) {
-            recentDoctorsAdapter.submitList(it)
-        }
+        doctors.observe(viewLifecycleOwner, doctorsAdapter::submitList)
+        recentDoctors.observe(viewLifecycleOwner, recentDoctorsAdapter::submitList)
         networkState.observe(viewLifecycleOwner, loadStateAdapter::loadState::set)
         navigationLiveData.observe(viewLifecycleOwner, findNavController()::navigate)
-    }
-
-    override fun onContextItemSelected(item: MenuItem): Boolean {
-        return when (item.itemId) {
-            DoctorsAdapter.ITEM_ID_MAP -> {
-                val location = doctorsAdapter.getLocationOf(item.groupId)
-                showMap(location)
-                true
-            }
-            DoctorsAdapter.ITEM_ID_CALL -> {
-                val number = doctorsAdapter.getPhoneOf(item.groupId)
-                dialPhoneNumber(number)
-                true
-            }
-            DoctorsAdapter.ITEM_ID_EMAIL -> {
-                val address = doctorsAdapter.getEmailOf(item.groupId)
-                composeEmail(address)
-                true
-            }
-            DoctorsAdapter.ITEM_ID_WEBSITE -> {
-                val website = doctorsAdapter.getWebsiteOf(item.groupId)
-                openWebPage(website)
-                true
-            }
-            else -> super.onContextItemSelected(item)
-        }
     }
 
     @ExperimentalCoroutinesApi

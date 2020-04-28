@@ -20,6 +20,7 @@ import android.content.Context
 import android.view.LayoutInflater
 import androidx.test.annotation.UiThreadTest
 import androidx.test.core.app.ApplicationProvider
+import androidx.test.filters.MediumTest
 import androidx.test.internal.runner.junit4.AndroidJUnit4ClassRunner
 import io.github.nuhkoca.vivy.databinding.DoctorsFragmentBinding
 import org.junit.Test
@@ -37,6 +38,7 @@ import org.junit.runner.RunWith
  * A test class for [DoctorsFragment]
  */
 @RunWith(AndroidJUnit4ClassRunner::class)
+@MediumTest
 class DoctorsFragmentTest : BaseTestClass() {
 
     @Test

@@ -24,6 +24,7 @@ import androidx.lifecycle.viewModelScope
 import io.github.nuhkoca.vivy.data.model.view.DoctorViewItem
 import io.github.nuhkoca.vivy.domain.repository.Repository
 import io.github.nuhkoca.vivy.ui.di.MainScope
+import io.github.nuhkoca.vivy.util.coroutines.DispatcherProvider
 import io.github.nuhkoca.vivy.util.event.SingleLiveEvent
 import io.github.nuhkoca.vivy.util.navigation.DetailContract
 import io.github.nuhkoca.vivy.util.recyclerview.LoadState
@@ -40,7 +41,10 @@ import javax.inject.Inject
 
 @MainScope
 @OptIn(ExperimentalCoroutinesApi::class, FlowPreview::class)
-class DoctorsViewModel @Inject constructor(private val repository: Repository) : ViewModel() {
+class DoctorsViewModel @Inject constructor(
+    private val repository: Repository,
+    private val dispatcherProvider: DispatcherProvider
+) : ViewModel() {
 
     @ExperimentalCoroutinesApi
     val queryChannel = ConflatedBroadcastChannel(EMPTY_QUERY)
@@ -49,7 +53,7 @@ class DoctorsViewModel @Inject constructor(private val repository: Repository) :
     private val trigger = SingleLiveEvent<Unit>()
 
     init {
-        trigger.call() // Just for the trigger repository
+        trigger.call() // Just for triggering the repository
 
         queryChannel.asFlow()
             .debounce(DEBOUNCE_IN_MS)
@@ -74,15 +78,18 @@ class DoctorsViewModel @Inject constructor(private val repository: Repository) :
             }
         }
     }
+
     val networkState: LiveData<LoadState> = repoResult.switchMap { it.networkState }
 
-    val recentDoctors = repository.getRecentDoctors()
+    val recentDoctors = queryLiveData.switchMap { query ->
+        repository.getRecentDoctors("%$query%")
+    }
 
     fun retry() = repoResult.value?.retry?.invoke()
 
     fun setSelectedDoctor(doctorViewItem: DoctorViewItem) {
-        viewModelScope.launch {
-            _doctorLiveData.value = doctorViewItem
+        viewModelScope.launch(dispatcherProvider.io) {
+            _doctorLiveData.postValue(doctorViewItem)
             repository.updateVisitingTimeById(doctorViewItem.id)
         }
     }

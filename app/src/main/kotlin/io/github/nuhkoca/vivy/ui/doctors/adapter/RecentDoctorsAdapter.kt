@@ -15,6 +15,7 @@
  */
 package io.github.nuhkoca.vivy.ui.doctors.adapter
 
+import android.view.ContextMenu
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -26,14 +27,20 @@ import io.github.nuhkoca.vivy.data.model.view.DoctorViewItem
 import io.github.nuhkoca.vivy.databinding.LayoutDoctorItemBinding
 import io.github.nuhkoca.vivy.databinding.LayoutDoctorItemTitleBinding
 import io.github.nuhkoca.vivy.ui.di.MainScope
+import io.github.nuhkoca.vivy.util.recyclerview.MenuItem.Companion.ITEM_ID_CALL
+import io.github.nuhkoca.vivy.util.recyclerview.MenuItem.Companion.ITEM_ID_EMAIL
+import io.github.nuhkoca.vivy.util.recyclerview.MenuItem.Companion.ITEM_ID_MAP
+import io.github.nuhkoca.vivy.util.recyclerview.MenuItem.Companion.ITEM_ID_WEBSITE
 import io.github.nuhkoca.vivy.util.event.SingleLiveEvent
 import io.github.nuhkoca.vivy.util.recyclerview.AdapterDataObserverProxy
 import io.github.nuhkoca.vivy.util.recyclerview.BaseViewHolder
+import io.github.nuhkoca.vivy.util.recyclerview.MenuItem
 import javax.inject.Inject
 
 @MainScope
 class RecentDoctorsAdapter @Inject constructor(
-    private val itemClickLiveData: SingleLiveEvent<DoctorViewItem>
+    private val itemClickLiveData: SingleLiveEvent<DoctorViewItem>,
+    private val menuClickLiveData: SingleLiveEvent<MenuItem>
 ) : ListAdapter<DoctorViewItem, RecyclerView.ViewHolder>(DIFF_CALLBACK) {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
@@ -94,12 +101,57 @@ class RecentDoctorsAdapter @Inject constructor(
     }
 
     inner class DoctorViewHolder(itemView: View) :
-        BaseViewHolder<LayoutDoctorItemBinding, DoctorViewItem>(itemView) {
+        BaseViewHolder<LayoutDoctorItemBinding, DoctorViewItem>(itemView),
+        View.OnCreateContextMenuListener {
+
+        init {
+            itemView.setOnCreateContextMenuListener(this)
+        }
 
         override fun bindTo(item: DoctorViewItem) {
             binding.doctor = item
             itemView.setOnClickListener { itemClickLiveData.value = item }
             super.bindTo(item)
+        }
+
+        override fun onCreateContextMenu(
+            menu: ContextMenu,
+            v: View?,
+            menuInfo: ContextMenu.ContextMenuInfo?
+        ) {
+            menu.setHeaderTitle(R.string.context_menu_header_title)
+            menu.add(R.string.context_menu_option_map).setOnMenuItemClickListener {
+                menuClickLiveData.value =
+                    MenuItem(
+                        ITEM_ID_MAP,
+                        getItem(bindingAdapterPosition - 1)?.location
+                    )
+                true
+            }
+            menu.add(R.string.context_menu_option_call).setOnMenuItemClickListener {
+                menuClickLiveData.value =
+                    MenuItem(
+                        ITEM_ID_CALL,
+                        getItem(bindingAdapterPosition - 1)?.phoneNumber
+                    )
+                true
+            }
+            menu.add(R.string.context_menu_option_email).setOnMenuItemClickListener {
+                menuClickLiveData.value =
+                    MenuItem(
+                        ITEM_ID_EMAIL,
+                        getItem(bindingAdapterPosition - 1)?.email
+                    )
+                true
+            }
+            menu.add(R.string.context_menu_option_website).setOnMenuItemClickListener {
+                menuClickLiveData.value =
+                    MenuItem(
+                        ITEM_ID_WEBSITE,
+                        getItem(bindingAdapterPosition - 1)?.website
+                    )
+                true
+            }
         }
     }
 

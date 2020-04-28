@@ -44,9 +44,9 @@ To install the latest release version please respectively;
 * `cd scripts` on the main project
 *  `sh install-release.sh`
 
-**Please specify jvm-target as 1.8 following Preferences->Other Settings->Kotlin Compiler->Target JVM Version->1.8**, otherwise IDE might behave oddly.
+This will produce a production-ready apk on your device. Please note, this is recommended for the best experience.
 
-This will produce a production-ready apk on your device.
+**Please specify jvm-target as 1.8 following Preferences->Other Settings->Kotlin Compiler->Target JVM Version->1.8**, otherwise IDE might behave oddly.
 
 ### Code style
 
@@ -90,6 +90,7 @@ Moreover, has been implemented support for [dark theme](https://developer.androi
 |-------|---------------------------------------------------|------------------------------------------|
 | List | <img src="art/list_light.jpg" width="300"> |<img src="art/list_dark.jpg" width="300"> |
 | Detail | <img src="art/detail_light.jpg" width="300"> |<img src="art/detail_dark.jpg" width="300"> |
+| Search | <img src="art/search_light.jpg" width="300"> |<img src="art/search_dark.jpg" width="300"> |
 ## Architecture
 
 The architecture of the application is based, apply and strictly complies with each of the following 5 points:
@@ -125,7 +126,7 @@ Passing a reference of the View (activity or fragment) to the ViewModel is a ser
 
 <img src="art/architecture.png">
 
-The communication between the different layers follow the above diagram using the reactive paradigm, observing changes on components without need of callbacks avoiding leaks, edge cases related with them and single source of truth.
+The communication between the different layers follow the above diagram using the reactive paradigm, observing changes on components without need of callbacks avoiding leaks, edge cases related with them and single source of truth. Single source of truth provides a crucial opportunity to easily implement some functionalities such as search, filter, etc.
 
 ## Tech-stack
 

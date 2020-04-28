@@ -17,7 +17,6 @@ package io.github.nuhkoca.vivy.binding.di
 
 import android.content.Context
 import coil.ImageLoader
-import coil.ImageLoaderBuilder
 import dagger.Module
 import dagger.Provides
 import io.github.nuhkoca.vivy.binding.adapters.ImageBindingAdapter
@@ -32,7 +31,8 @@ internal object BindingModule {
 
     @Provides
     @BindingScope
-    internal fun provideImageLoader(context: Context) = ImageLoaderBuilder(context).apply {
+    internal fun provideImageLoader(context: Context) = ImageLoader.Builder(context).apply {
+        bitmapPoolPercentage(DEFAULT_MEMORY_MULTIPLIER)
         availableMemoryPercentage(DEFAULT_MEMORY_MULTIPLIER)
         crossfade(true)
     }.build()

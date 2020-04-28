@@ -45,9 +45,11 @@ interface Repository {
     /**
      * Returns recent visited doctors by the most recent visiting time
      *
+     * @param name The doctor name
+     *
      * @return [DoctorViewItem] in LiveData wrapper
      */
-    fun getRecentDoctors(): LiveData<List<DoctorViewItem>>
+    fun getRecentDoctors(name: String): LiveData<List<DoctorViewItem>>
 
     /**
      * Updates visiting time of selected doctor

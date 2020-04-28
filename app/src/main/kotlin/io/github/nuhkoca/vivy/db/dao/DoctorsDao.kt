@@ -48,8 +48,8 @@ interface DoctorsDao {
     @Query("SELECT * FROM doctors WHERE id =:id")
     fun getDoctorsById(id: String): DoctorViewItem
 
-    @Query("SELECT * FROM doctors WHERE is_recent = 1 ORDER BY recent_visiting DESC LIMIT 3")
-    fun getRecentDoctorList(): LiveData<List<DoctorViewItem>>
+    @Query("SELECT * FROM doctors WHERE LOWER(name) LIKE :name AND is_recent = 1 ORDER BY recent_visiting DESC LIMIT 3")
+    fun getRecentDoctorList(name: String): LiveData<List<DoctorViewItem>>
 
     @Query("SELECT * FROM doctors WHERE is_recent = 1 ORDER BY recent_visiting DESC")
     fun getAllRecentDoctors(): List<DoctorViewItem>

@@ -3,6 +3,4 @@
     <color name="colorPrimary">#00E1CF</color>
     <color name="colorPrimaryDark">#00AE9E</color>
     <color name="colorAccent">#68FFFF</color>
-    <color name="placeholder_grey">#AAADC4</color>
-    <color name="placeholder_grey_20">#33AAADC4</color>
 </resources>

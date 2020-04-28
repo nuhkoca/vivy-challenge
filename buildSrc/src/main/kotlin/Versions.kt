@@ -18,7 +18,7 @@ internal object Versions {
     const val kotlin = "1.3.72"
     const val kotlinx_serialization_runtime = "0.20.0"
     const val coroutines = "1.3.4"
-    const val lint = "27.1.0-alpha07"
+    const val lint = "27.1.0-alpha08"
 
     // UI
     const val material = "1.2.0-alpha06"
@@ -51,7 +51,7 @@ internal object Versions {
 
     // Other stuff
     const val timber = "4.7.1"
-    const val coil = "0.10.0"
+    const val coil = "0.10.1"
     const val detekt = "1.8.0"
     const val ktlint_internal = "0.36.0"
     const val oss = "17.0.0"

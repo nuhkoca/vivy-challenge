@@ -24,6 +24,7 @@ import io.github.nuhkoca.vivy.domain.mapper.DoctorsViewItemMapperTest
 import io.github.nuhkoca.vivy.domain.repository.DoctorsRepositoryTest
 import io.github.nuhkoca.vivy.ui.doctors.DoctorsViewModelTest
 import io.github.nuhkoca.vivy.util.ext.StringExtTest
+import io.github.nuhkoca.vivy.util.navigation.DetailContractTest
 import org.junit.runner.RunWith
 import org.junit.runners.Suite
 
@@ -40,6 +41,7 @@ import org.junit.runners.Suite
     DoctorsViewItemMapperTest::class,
     DoctorsRepositoryTest::class,
     DoctorsViewModelTest::class,
-    StringExtTest::class
+    StringExtTest::class,
+    DetailContractTest::class
 )
 object UnitTestSuite

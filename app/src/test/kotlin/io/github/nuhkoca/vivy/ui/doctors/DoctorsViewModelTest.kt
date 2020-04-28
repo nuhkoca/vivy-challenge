@@ -37,14 +37,12 @@ import io.github.nuhkoca.vivy.util.recyclerview.LoadState
 import io.mockk.Runs
 import io.mockk.coEvery
 import io.mockk.coVerify
-import io.mockk.coVerifyOrder
 import io.mockk.confirmVerified
 import io.mockk.every
 import io.mockk.impl.annotations.MockK
 import io.mockk.impl.annotations.RelaxedMockK
 import io.mockk.just
 import io.mockk.verify
-import io.mockk.verifyOrder
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.channels.BroadcastChannel
 import org.junit.Rule
@@ -80,9 +78,6 @@ class DoctorsViewModelTest : BaseTestClass() {
     private lateinit var repository: Repository
 
     @RelaxedMockK
-    private lateinit var doctorsObserver: Observer<PagedList<DoctorViewItem>>
-
-    @RelaxedMockK
     private lateinit var recentDoctorsObserver: Observer<List<DoctorViewItem>>
 
     @RelaxedMockK
@@ -111,6 +106,7 @@ class DoctorsViewModelTest : BaseTestClass() {
     private val _networkStateLiveData = MutableLiveData<LoadState>(LoadState.Done)
     private val networkStateLiveData: LiveData<LoadState> = _networkStateLiveData
 
+    @ExperimentalCoroutinesApi
     override fun setUp() {
         super.setUp()
 
@@ -122,11 +118,11 @@ class DoctorsViewModelTest : BaseTestClass() {
             networkStateLiveData
         ) {}
 
-        every { repository.getRecentDoctors() } returns recentDoctorLiveData
+        every { repository.getRecentDoctors(any()) } returns recentDoctorLiveData
 
         coEvery { repository.updateVisitingTimeById(any()) } just Runs
 
-        doctorsViewModel = DoctorsViewModel(repository)
+        doctorsViewModel = DoctorsViewModel(repository, coroutinesTestRule.testDispatcherProvider)
     }
 
     @Test
@@ -141,12 +137,6 @@ class DoctorsViewModelTest : BaseTestClass() {
         assertThat(value).isEqualTo(LoadState.Done)
 
         verify { repository.getDoctorList() }
-        verify { repository.getRecentDoctors() }
-
-        verifyOrder {
-            repository.getRecentDoctors()
-            repository.getDoctorList()
-        }
 
         confirmVerified(repository)
     }
@@ -154,6 +144,11 @@ class DoctorsViewModelTest : BaseTestClass() {
     @Test
     @ExperimentalCoroutinesApi
     fun `recent doctors should be fetched`() = coroutinesTestRule.runBlockingTest {
+        // Pause the dispatcher and set query in order to trigger recent doctors
+        coroutinesTestRule.testDispatcher.pauseDispatcher()
+        doctorsViewModel.queryChannel.offer("")
+        coroutinesTestRule.testDispatcher.resumeDispatcher()
+
         lifeCycleTestOwner.onResume()
 
         doctorsViewModel.recentDoctors.observe(lifeCycleTestOwner, recentDoctorsObserver)
@@ -176,7 +171,7 @@ class DoctorsViewModelTest : BaseTestClass() {
             assertThat(doctorViewItem.isRecent).isEqualTo(listOfDoctorViewItem[index].isRecent)
         }
 
-        verify(exactly = 1) { repository.getRecentDoctors() }
+        verify(exactly = 1) { repository.getRecentDoctors(any()) }
 
         confirmVerified(repository)
     }
@@ -204,12 +199,6 @@ class DoctorsViewModelTest : BaseTestClass() {
         assertThat(value?.isRecent).isEqualTo(selectedDoctorViewItem.isRecent)
 
         coVerify(exactly = 1) { repository.updateVisitingTimeById(any()) }
-        verify(exactly = 1) { repository.getRecentDoctors() }
-
-        coVerifyOrder {
-            repository.getRecentDoctors()
-            repository.updateVisitingTimeById(any())
-        }
 
         confirmVerified(repository)
     }
@@ -241,10 +230,6 @@ class DoctorsViewModelTest : BaseTestClass() {
         val value = doctorsViewModel.queryChannel.waitForEvent()
         assertThat(value).isNotEmpty()
         assertThat(value).isEqualTo(query)
-
-        verify { repository.getRecentDoctors() }
-
-        confirmVerified(repository)
     }
 
     /**

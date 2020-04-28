@@ -29,6 +29,7 @@ import io.github.nuhkoca.vivy.ui.doctors.DoctorsFragment
 import io.github.nuhkoca.vivy.ui.doctors.DoctorsViewModel
 import io.github.nuhkoca.vivy.ui.doctors.adapter.DoctorsAdapter
 import io.github.nuhkoca.vivy.ui.doctors.adapter.DoctorsLoadStateAdapter
+import io.github.nuhkoca.vivy.util.recyclerview.MenuItem
 import io.github.nuhkoca.vivy.ui.doctors.adapter.RecentDoctorsAdapter
 import io.github.nuhkoca.vivy.util.event.SingleLiveEvent
 import javax.inject.Scope
@@ -60,14 +61,16 @@ internal abstract class MainModule {
         @Provides
         @MainScope
         internal fun provideDoctorsAdapter(
-            itemClickLiveData: SingleLiveEvent<DoctorViewItem>
-        ) = DoctorsAdapter(itemClickLiveData)
+            itemClickLiveData: SingleLiveEvent<DoctorViewItem>,
+            menuClickLiveData: SingleLiveEvent<MenuItem>
+        ) = DoctorsAdapter(itemClickLiveData, menuClickLiveData)
 
         @Provides
         @MainScope
         internal fun provideRecentDoctorsAdapter(
-            itemClickLiveData: SingleLiveEvent<DoctorViewItem>
-        ) = RecentDoctorsAdapter(itemClickLiveData)
+            itemClickLiveData: SingleLiveEvent<DoctorViewItem>,
+            menuClickLiveData: SingleLiveEvent<MenuItem>
+        ) = RecentDoctorsAdapter(itemClickLiveData, menuClickLiveData)
 
         @Provides
         @MainScope
@@ -82,6 +85,10 @@ internal abstract class MainModule {
         @Provides
         @MainScope
         internal fun provideRetryClickListener() = SingleLiveEvent<Unit>()
+
+        @Provides
+        @MainScope
+        internal fun provideMenuClickListener() = SingleLiveEvent<MenuItem>()
     }
 }
 

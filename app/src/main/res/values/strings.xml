@@ -25,7 +25,6 @@
     <string name="recent_doctors_adapter_header_text">Recent Doctors"</string>
 
     <!-- Error View -->
-    <string name="error_message_text">Sorry, we\'re failed!</string>
     <string name="load_state_error_button_text">Retry</string>
 
     <!-- Binding Adapter -->

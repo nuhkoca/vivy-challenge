@@ -166,7 +166,7 @@ class VivyDBTest : BaseTestClass() {
         lifeCycleTestOwner.onResume()
 
         // Then
-        val recentDoctors = doctorsDao.getRecentDoctorList()
+        val recentDoctors = doctorsDao.getRecentDoctorList("%%")
         recentDoctors.observe(lifeCycleTestOwner, observer)
         assertThat(recentDoctors.value).hasSize(doctors.filter { it.isRecent }.size)
         assertThat(recentDoctors.value).isEqualTo(doctors.filter { it.isRecent })
