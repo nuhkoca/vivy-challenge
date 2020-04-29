@@ -30,11 +30,6 @@ import io.github.nuhkoca.vivy.ui.Searchable
 import io.github.nuhkoca.vivy.ui.di.MainScope
 import io.github.nuhkoca.vivy.ui.doctors.adapter.DoctorsAdapter
 import io.github.nuhkoca.vivy.ui.doctors.adapter.DoctorsLoadStateAdapter
-import io.github.nuhkoca.vivy.util.recyclerview.MenuItem
-import io.github.nuhkoca.vivy.util.recyclerview.MenuItem.Companion.ITEM_ID_CALL
-import io.github.nuhkoca.vivy.util.recyclerview.MenuItem.Companion.ITEM_ID_EMAIL
-import io.github.nuhkoca.vivy.util.recyclerview.MenuItem.Companion.ITEM_ID_MAP
-import io.github.nuhkoca.vivy.util.recyclerview.MenuItem.Companion.ITEM_ID_WEBSITE
 import io.github.nuhkoca.vivy.ui.doctors.adapter.RecentDoctorsAdapter
 import io.github.nuhkoca.vivy.util.event.SingleLiveEvent
 import io.github.nuhkoca.vivy.util.ext.composeEmail
@@ -42,6 +37,11 @@ import io.github.nuhkoca.vivy.util.ext.dialPhoneNumber
 import io.github.nuhkoca.vivy.util.ext.openWebPage
 import io.github.nuhkoca.vivy.util.ext.showMap
 import io.github.nuhkoca.vivy.util.ext.viewBinding
+import io.github.nuhkoca.vivy.util.recyclerview.MenuItem
+import io.github.nuhkoca.vivy.util.recyclerview.MenuItem.Companion.ITEM_ID_CALL
+import io.github.nuhkoca.vivy.util.recyclerview.MenuItem.Companion.ITEM_ID_EMAIL
+import io.github.nuhkoca.vivy.util.recyclerview.MenuItem.Companion.ITEM_ID_MAP
+import io.github.nuhkoca.vivy.util.recyclerview.MenuItem.Companion.ITEM_ID_WEBSITE
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import javax.inject.Inject
 
@@ -89,7 +89,6 @@ class DoctorsFragment @Inject constructor(
                 ITEM_ID_WEBSITE -> openWebPage(it.item as String)
             }
         }
-        registerForContextMenu(this)
     }
 
     private fun observeViewModel() = with(viewModel) {
