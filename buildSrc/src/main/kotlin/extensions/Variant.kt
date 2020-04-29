@@ -19,7 +19,7 @@ import com.android.build.gradle.api.ApplicationVariant
 import com.android.build.gradle.internal.api.BaseVariantOutputImpl
 import org.gradle.api.DomainObjectSet
 
-private const val APP_NAME_PREFIX = "libbra"
+private const val APP_NAME_PREFIX = "vivy"
 private const val OUTPUT_EXTENSION = ".apk"
 
 /**

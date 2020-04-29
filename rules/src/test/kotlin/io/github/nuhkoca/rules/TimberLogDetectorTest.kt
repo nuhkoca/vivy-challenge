@@ -32,7 +32,7 @@ class TimberLogDetectorTest : LintDetectorTest() {
     fun `test should detect usage of Timber`() {
         val stubFile = kotlin(
             """
-            package io.github.nuhkoca.libbra
+            package io.github.nuhkoca.vivy
 
             import timber.log.Timber
 
@@ -53,7 +53,7 @@ class TimberLogDetectorTest : LintDetectorTest() {
             .expectWarningCount(1)
             .expect(
                 """
-             src/io/github/nuhkoca/libbra/Dog.kt:8: Warning: Directly calling timber.log.Timber usage is not recommended. [TimberLogDetector]
+             src/io/github/nuhkoca/vivy/Dog.kt:8: Warning: Directly calling timber.log.Timber usage is not recommended. [TimberLogDetector]
                      Timber.d("woof! woof!")
                      ~~~~~~~~~~~~~~~~~~~~~~~
              0 errors, 1 warnings
@@ -65,9 +65,9 @@ class TimberLogDetectorTest : LintDetectorTest() {
     fun `test should not detect if log import is different`() {
         val fileToEvaluate = kotlin(
             """
-             package io.github.nuhkoca.libbra
+             package io.github.nuhkoca.vivy
 
-             import io.github.nuhkoca.libbra.util.ext.d
+             import io.github.nuhkoca.vivy.util.ext.d
 
              class Dog {
                  fun bark() {

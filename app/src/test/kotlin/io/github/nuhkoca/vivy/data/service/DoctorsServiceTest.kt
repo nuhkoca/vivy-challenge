@@ -144,7 +144,7 @@ class DoctorsServiceTest {
         } catch (e: SocketTimeoutException) {
             println(e)
             assertThat(e.message).isNotNull()
-            assertThat(e.message).contains("timeout")
+            assertThat(e.message).isIn(listOf("timeout", "Read timed out"))
         }
 
         // Then
