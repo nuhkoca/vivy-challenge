@@ -30,6 +30,8 @@ import io.github.nuhkoca.vivy.data.service.DoctorsService
 import io.github.nuhkoca.vivy.db.VivyDB
 import io.github.nuhkoca.vivy.ext.runBlockingTest
 import io.github.nuhkoca.vivy.rule.CoroutinesTestRule
+import io.github.nuhkoca.vivy.shared.ext.getPagedList
+import io.github.nuhkoca.vivy.shared.ext.loadAllData
 import io.github.nuhkoca.vivy.util.mapper.Mapper
 import io.mockk.confirmVerified
 import io.mockk.every
@@ -40,8 +42,7 @@ import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.mockito.junit.MockitoJUnitRunner
-import java.util.concurrent.ExecutorService
-import java.util.concurrent.Executors
+import java.util.concurrent.Executor
 
 /**
  * A test class for [DoctorsRepository]
@@ -86,7 +87,7 @@ class DoctorsRepositoryTest : BaseTestClass() {
     */
     private lateinit var repository: Repository
     private lateinit var lifeCycleTestOwner: LifeCycleTestOwner
-    private lateinit var ioExecutor: ExecutorService
+    private val networkExecutor = Executor { command -> command.run() }
 
     @ExperimentalCoroutinesApi
     override fun setUp() {
@@ -98,18 +99,38 @@ class DoctorsRepositoryTest : BaseTestClass() {
 
         every { vivyDB.doctorsDao.getRecentCount() } returns 3
 
-        ioExecutor = Executors.newSingleThreadExecutor()
-
         repository = DoctorsRepository(
             vivyDB,
             service,
             mapper,
-            ioExecutor,
+            networkExecutor,
             coroutinesTestRule.testDispatcherProvider
         )
 
         lifeCycleTestOwner = LifeCycleTestOwner()
         lifeCycleTestOwner.onCreate()
+    }
+
+    @Test
+    fun `repository should get doctor list`() {
+        // Given
+        val list = listOfDoctorViewItem
+
+        // When
+        repository.getDoctorList()
+
+        lifeCycleTestOwner.onResume()
+
+        val pagedlist = getPagedList(list, lifeCycleTestOwner)
+        pagedlist.loadAllData()
+
+        // Then
+        assertThat(pagedlist).isNotNull()
+        assertThat(pagedlist).hasSize(list.size)
+        assertThat(pagedlist).containsExactlyElementsIn(list).inOrder()
+
+        verify(exactly = 1) { vivyDB.doctorsDao.getDoctorList() }
+        confirmVerified(vivyDB.doctorsDao)
     }
 
     @Test

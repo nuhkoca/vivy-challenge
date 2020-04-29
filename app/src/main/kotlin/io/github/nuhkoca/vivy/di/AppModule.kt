@@ -39,6 +39,7 @@ import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 import retrofit2.create
+import java.util.concurrent.Executor
 import java.util.concurrent.Executors
 import java.util.concurrent.TimeUnit
 import javax.inject.Qualifier
@@ -115,7 +116,7 @@ abstract class AppModule {
 
         @Provides
         @Singleton
-        internal fun provideIOExecutor() = Executors.newSingleThreadExecutor()
+        internal fun provideIOExecutor(): Executor = Executors.newSingleThreadExecutor()
     }
 }
 

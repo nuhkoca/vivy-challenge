@@ -16,12 +16,17 @@
 package io.github.nuhkoca.vivy.shared.ext
 
 import android.database.Cursor
+import androidx.lifecycle.Observer
 import androidx.paging.Config
 import androidx.paging.DataSource
 import androidx.paging.LivePagedListBuilder
+import androidx.paging.PagedList
 import androidx.room.RoomDatabase
 import androidx.room.RoomSQLiteQuery
 import androidx.room.paging.LimitOffsetDataSource
+import com.google.common.truth.Truth.assertThat
+import io.github.nuhkoca.vivy.LifeCycleTestOwner
+import io.github.nuhkoca.vivy.data.model.view.DoctorViewItem
 import io.mockk.every
 import io.mockk.mockk
 
@@ -47,19 +52,52 @@ private val mockDb = mockk<RoomDatabase> {
     every { invalidationTracker } returns mockk(relaxUnitFun = true)
 }
 
-class MockLimitDataSource<T>(private val itemList: List<T>) :
+private class MockLimitDataSource<T>(private val itemList: List<T>) :
     LimitOffsetDataSource<T>(mockDb, mockQuery, false, null) {
     override fun convertRows(cursor: Cursor?): MutableList<T> = itemList.toMutableList()
     override fun countItems(): Int = itemList.count()
     override fun isInvalid(): Boolean = false
-    override fun loadRange(params: LoadRangeParams, callback: LoadRangeCallback<T>) {
-        /* Not implemented */
+    override fun loadRange(
+        params: LoadRangeParams,
+        callback: LoadRangeCallback<T>
+    ) { /* Not implemented */
     }
 
     override fun loadRange(startPosition: Int, loadCount: Int) =
         itemList.subList(startPosition, startPosition + loadCount).toMutableList()
 
-    override fun loadInitial(params: LoadInitialParams, callback: LoadInitialCallback<T>) {
+    override fun loadInitial(
+        params: LoadInitialParams,
+        callback: LoadInitialCallback<T>
+    ) {
         callback.onResult(itemList, 0)
+    }
+}
+
+fun <T> PagedList<T>.loadAllData() {
+    do {
+        val oldSize = this.loadedCount
+        this.loadAround(this.size - 1)
+    } while (this.size != oldSize)
+}
+
+fun getPagedList(
+    listing: List<DoctorViewItem>,
+    lifeCycleTestOwner: LifeCycleTestOwner
+): PagedList<DoctorViewItem> {
+    val observer = LoggingObserver<PagedList<DoctorViewItem>>()
+    val paged = listing.asPagedList()
+    paged.observe(lifeCycleTestOwner, observer)
+    assertThat(observer.value).isNotNull()
+    return observer.value!!
+}
+
+/**
+ * Simple observer that logs the latest value it receives
+ */
+private class LoggingObserver<T> : Observer<T> {
+    var value: T? = null
+    override fun onChanged(t: T?) {
+        this.value = t
     }
 }

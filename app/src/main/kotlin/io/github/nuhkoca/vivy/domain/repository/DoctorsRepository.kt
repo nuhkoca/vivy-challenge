@@ -33,7 +33,7 @@ import io.github.nuhkoca.vivy.util.mapper.Mapper
 import kotlinx.coroutines.NonCancellable
 import kotlinx.coroutines.withContext
 import java.util.*
-import java.util.concurrent.ExecutorService
+import java.util.concurrent.Executor
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -51,7 +51,7 @@ class DoctorsRepository @Inject constructor(
     private val vivyDB: VivyDB,
     private val service: DoctorsService,
     private val mapper: @JvmSuppressWildcards Mapper<Doctors, DoctorsViewItem>,
-    private val ioExecutor: ExecutorService,
+    private val ioExecutor: Executor,
     private val dispatcherProvider: DispatcherProvider
 ) : Repository {
 
