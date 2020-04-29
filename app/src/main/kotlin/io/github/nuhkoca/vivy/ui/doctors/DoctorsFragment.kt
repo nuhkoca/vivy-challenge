@@ -84,9 +84,9 @@ class DoctorsFragment @Inject constructor(
         menuClickLiveData.observe(viewLifecycleOwner) {
             when (it.id) {
                 ITEM_ID_MAP -> showMap(it.item as Location)
-                ITEM_ID_CALL -> dialPhoneNumber(it.item as String)
-                ITEM_ID_EMAIL -> composeEmail(it.item as String)
-                ITEM_ID_WEBSITE -> openWebPage(it.item as String)
+                ITEM_ID_CALL -> dialPhoneNumber(it.item.toString())
+                ITEM_ID_EMAIL -> composeEmail(it.item.toString())
+                ITEM_ID_WEBSITE -> openWebPage(it.item.toString())
             }
         }
     }
