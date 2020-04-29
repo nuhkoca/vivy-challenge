@@ -27,14 +27,14 @@ import io.github.nuhkoca.vivy.data.model.view.DoctorViewItem
 import io.github.nuhkoca.vivy.databinding.LayoutDoctorItemBinding
 import io.github.nuhkoca.vivy.databinding.LayoutDoctorItemTitleBinding
 import io.github.nuhkoca.vivy.ui.di.MainScope
-import io.github.nuhkoca.vivy.util.recyclerview.MenuItem.Companion.ITEM_ID_CALL
-import io.github.nuhkoca.vivy.util.recyclerview.MenuItem.Companion.ITEM_ID_EMAIL
-import io.github.nuhkoca.vivy.util.recyclerview.MenuItem.Companion.ITEM_ID_MAP
-import io.github.nuhkoca.vivy.util.recyclerview.MenuItem.Companion.ITEM_ID_WEBSITE
 import io.github.nuhkoca.vivy.util.event.SingleLiveEvent
 import io.github.nuhkoca.vivy.util.recyclerview.AdapterDataObserverProxy
 import io.github.nuhkoca.vivy.util.recyclerview.BaseViewHolder
 import io.github.nuhkoca.vivy.util.recyclerview.MenuItem
+import io.github.nuhkoca.vivy.util.recyclerview.MenuItem.Companion.ITEM_ID_CALL
+import io.github.nuhkoca.vivy.util.recyclerview.MenuItem.Companion.ITEM_ID_EMAIL
+import io.github.nuhkoca.vivy.util.recyclerview.MenuItem.Companion.ITEM_ID_MAP
+import io.github.nuhkoca.vivy.util.recyclerview.MenuItem.Companion.ITEM_ID_WEBSITE
 import javax.inject.Inject
 
 @MainScope
@@ -81,11 +81,6 @@ class DoctorsAdapter @Inject constructor(
      */
     override fun unregisterAdapterDataObserver(observer: RecyclerView.AdapterDataObserver) {
         super.unregisterAdapterDataObserver(AdapterDataObserverProxy(observer, 1))
-    }
-
-    override fun onViewRecycled(holder: RecyclerView.ViewHolder) {
-        super.onViewRecycled(holder)
-        holder.itemView.setOnClickListener(null)
     }
 
     override fun getItemViewType(position: Int): Int {
