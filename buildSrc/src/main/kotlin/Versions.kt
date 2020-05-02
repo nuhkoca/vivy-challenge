@@ -26,7 +26,7 @@ internal object Versions {
     const val appcompat = "1.1.0"
     const val activity_ktx = "1.1.0"
     const val fragment_ktx = "1.2.4"
-    const val recyclerview = "1.2.0-alpha02"
+    const val recyclerview = "1.2.0-alpha03"
     const val constraint_layout = "2.0.0-beta4"
 
     // Navigation
@@ -47,7 +47,7 @@ internal object Versions {
     // Retrofit & OkHttp
     const val retrofit = "2.8.1"
     const val retrofit_serialization_adapter = "0.5.0"
-    const val okhttp = "4.5.0"
+    const val okhttp = "4.6.0"
 
     // Other stuff
     const val timber = "4.7.1"
